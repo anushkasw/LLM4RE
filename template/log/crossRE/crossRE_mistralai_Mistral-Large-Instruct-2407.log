@@ -1,0 +1,125 @@
+Start Date : Thu Aug  8 23:14:30 EDT 2024
+Host       : c1006a-s17
+Directory  : /blue/woodard/share/Relation-Extraction/LLM_for_RE/template
+Running crossRE_mistralai_Mistral-Large-Instruct-2407 on 8 CPU cores
+
+Dataset: crossRE
+Model: mistralai/Mistral-Large-Instruct-2407
+K: 1, seed: 13, dataset: crossRE
+--------------------------------------------------------------------
+
+/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/xformers/ops/fmha/flash.py:211: FutureWarning: `torch.library.impl_abstract` was renamed to `torch.library.register_fake`. Please use that instead; we will remove `torch.library.impl_abstract` in a future version of PyTorch.
+  @torch.library.impl_abstract("xformers_flash::flash_fwd")
+/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/xformers/ops/fmha/flash.py:344: FutureWarning: `torch.library.impl_abstract` was renamed to `torch.library.register_fake`. Please use that instead; we will remove `torch.library.impl_abstract` in a future version of PyTorch.
+  @torch.library.impl_abstract("xformers_flash::flash_bwd")
+loading file tokenizer.model from cache at /blue/woodard/share/Relation-Extraction/LLM_for_RE/cache/models--mistralai--Mistral-Large-Instruct-2407/snapshots/496bfde641b03ec15a2496e833b67360f5b0c622/tokenizer.model
+loading file tokenizer.json from cache at /blue/woodard/share/Relation-Extraction/LLM_for_RE/cache/models--mistralai--Mistral-Large-Instruct-2407/snapshots/496bfde641b03ec15a2496e833b67360f5b0c622/tokenizer.json
+loading file added_tokens.json from cache at None
+loading file special_tokens_map.json from cache at None
+loading file tokenizer_config.json from cache at /blue/woodard/share/Relation-Extraction/LLM_for_RE/cache/models--mistralai--Mistral-Large-Instruct-2407/snapshots/496bfde641b03ec15a2496e833b67360f5b0c622/tokenizer_config.json
+loading configuration file config.json from cache at /blue/woodard/share/Relation-Extraction/LLM_for_RE/cache/models--mistralai--Mistral-Large-Instruct-2407/snapshots/496bfde641b03ec15a2496e833b67360f5b0c622/config.json
+Model config MistralConfig {
+  "_name_or_path": "mistralai/Mistral-Large-Instruct-2407",
+  "architectures": [
+    "MistralForCausalLM"
+  ],
+  "attention_dropout": 0.0,
+  "bos_token_id": 1,
+  "eos_token_id": 2,
+  "head_dim": 128,
+  "hidden_act": "silu",
+  "hidden_size": 12288,
+  "initializer_range": 0.02,
+  "intermediate_size": 28672,
+  "max_position_embeddings": 131072,
+  "model_type": "mistral",
+  "num_attention_heads": 96,
+  "num_hidden_layers": 88,
+  "num_key_value_heads": 8,
+  "rms_norm_eps": 1e-05,
+  "rope_theta": 1000000.0,
+  "sliding_window": null,
+  "tie_word_embeddings": false,
+  "torch_dtype": "bfloat16",
+  "transformers_version": "4.44.0",
+  "use_cache": true,
+  "vocab_size": 32768
+}
+
+loading weights file model.safetensors from cache at /blue/woodard/share/Relation-Extraction/LLM_for_RE/cache/models--mistralai--Mistral-Large-Instruct-2407/snapshots/496bfde641b03ec15a2496e833b67360f5b0c622/model.safetensors.index.json
+Will use torch_dtype=torch.bfloat16 as defined in model's config object
+Instantiating MistralForCausalLM model under default dtype torch.bfloat16.
+Generate config GenerationConfig {
+  "bos_token_id": 1,
+  "eos_token_id": 2
+}
+
+Token is valid (permission: fineGrained).
+[1m[31mCannot authenticate through git-credential as no helper is defined on your machine.
+You might have to re-authenticate when pushing to the Hugging Face Hub.
+Run the following command in your terminal in case you want to set the 'store' credential helper as default.
+
+git config --global credential.helper store
+
+Read https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage for more details.[0m
+Token has not been saved to git credential helper.
+Your token has been saved to /home/tpan1/.cache/huggingface/token
+Login successful
+Loading mistralai/Mistral-Large-Instruct-2407
+Loading model
+Loading checkpoint shards:   0%|          | 0/51 [00:00<?, ?it/s]Loading checkpoint shards:   2%|▏         | 1/51 [01:03<53:00, 63.60s/it]Loading checkpoint shards:   4%|▍         | 2/51 [01:06<22:53, 28.03s/it]Loading checkpoint shards:   6%|▌         | 3/51 [01:09<13:12, 16.51s/it]Loading checkpoint shards:   8%|▊         | 4/51 [01:12<08:39, 11.05s/it]Loading checkpoint shards:  10%|▉         | 5/51 [01:24<08:44, 11.40s/it]Loading checkpoint shards:  12%|█▏        | 6/51 [01:27<06:33,  8.75s/it]Loading checkpoint shards:  14%|█▎        | 7/51 [01:38<06:46,  9.24s/it]Loading checkpoint shards:  16%|█▌        | 8/51 [01:42<05:25,  7.56s/it]Loading checkpoint shards:  18%|█▊        | 9/51 [01:44<04:13,  6.04s/it]Loading checkpoint shards:  20%|█▉        | 10/51 [01:48<03:38,  5.32s/it]Loading checkpoint shards:  22%|██▏       | 11/51 [03:46<26:37, 39.94s/it]Loading checkpoint shards:  24%|██▎       | 12/51 [05:14<35:21, 54.41s/it]Loading checkpoint shards:  25%|██▌       | 13/51 [05:44<29:44, 46.97s/it]Loading checkpoint shards:  27%|██▋       | 14/51 [06:01<23:26, 38.00s/it]Loading checkpoint shards:  29%|██▉       | 15/51 [08:28<42:25, 70.70s/it]Loading checkpoint shards:  31%|███▏      | 16/51 [08:33<29:45, 51.02s/it]Loading checkpoint shards:  33%|███▎      | 17/51 [08:49<23:02, 40.67s/it]Loading checkpoint shards:  35%|███▌      | 18/51 [08:50<15:41, 28.53s/it]Loading checkpoint shards:  37%|███▋      | 19/51 [08:53<11:12, 21.01s/it]Loading checkpoint shards:  39%|███▉      | 20/51 [08:54<07:39, 14.81s/it]Loading checkpoint shards:  41%|████      | 21/51 [08:54<05:14, 10.49s/it]Loading checkpoint shards:  43%|████▎     | 22/51 [10:47<20:00, 41.39s/it]Loading checkpoint shards:  45%|████▌     | 23/51 [10:48<13:36, 29.16s/it]Loading checkpoint shards:  47%|████▋     | 24/51 [10:48<09:13, 20.52s/it]Loading checkpoint shards:  49%|████▉     | 25/51 [10:49<06:16, 14.49s/it]Loading checkpoint shards:  51%|█████     | 26/51 [12:01<13:12, 31.70s/it]Loading checkpoint shards:  53%|█████▎    | 27/51 [12:02<08:58, 22.44s/it]Loading checkpoint shards:  55%|█████▍    | 28/51 [12:08<06:48, 17.74s/it]Loading checkpoint shards:  57%|█████▋    | 29/51 [12:09<04:35, 12.53s/it]Loading checkpoint shards:  59%|█████▉    | 30/51 [12:13<03:28,  9.91s/it]Loading checkpoint shards:  61%|██████    | 31/51 [12:18<02:52,  8.60s/it]Loading checkpoint shards:  63%|██████▎   | 32/51 [12:19<01:59,  6.29s/it]Loading checkpoint shards:  65%|██████▍   | 33/51 [12:20<01:22,  4.58s/it]Loading checkpoint shards:  67%|██████▋   | 34/51 [12:20<00:56,  3.31s/it]Loading checkpoint shards:  69%|██████▊   | 35/51 [13:00<03:51, 14.44s/it]Loading checkpoint shards:  71%|███████   | 36/51 [13:04<02:46, 11.11s/it]Loading checkpoint shards:  73%|███████▎  | 37/51 [13:04<01:51,  7.93s/it]Loading checkpoint shards:  75%|███████▍  | 38/51 [13:04<01:13,  5.64s/it]Loading checkpoint shards:  76%|███████▋  | 39/51 [13:05<00:48,  4.02s/it]Loading checkpoint shards:  78%|███████▊  | 40/51 [13:12<00:56,  5.13s/it]Loading checkpoint shards:  80%|████████  | 41/51 [15:31<07:32, 45.24s/it]Loading checkpoint shards:  82%|████████▏ | 42/51 [15:32<04:47, 31.99s/it]Loading checkpoint shards:  84%|████████▍ | 43/51 [15:53<03:48, 28.58s/it]Loading checkpoint shards:  86%|████████▋ | 44/51 [15:55<02:24, 20.68s/it]Loading checkpoint shards:  88%|████████▊ | 45/51 [15:56<01:27, 14.60s/it]Loading checkpoint shards:  90%|█████████ | 46/51 [15:56<00:52, 10.43s/it]Loading checkpoint shards:  92%|█████████▏| 47/51 [15:57<00:29,  7.37s/it]Loading checkpoint shards:  94%|█████████▍| 48/51 [16:00<00:18,  6.25s/it]Loading checkpoint shards:  96%|█████████▌| 49/51 [16:01<00:08,  4.48s/it]Loading checkpoint shards:  98%|█████████▊| 50/51 [16:01<00:03,  3.26s/it]Loading checkpoint shards: 100%|██████████| 51/51 [16:01<00:00,  2.34s/it]Loading checkpoint shards: 100%|██████████| 51/51 [16:01<00:00, 18.86s/it]
+All model checkpoint weights were used when initializing MistralForCausalLM.
+
+All the weights of MistralForCausalLM were initialized from the model checkpoint at mistralai/Mistral-Large-Instruct-2407.
+If your task is similar to the task the model of the checkpoint was trained on, you can already use MistralForCausalLM for predictions without further training.
+loading configuration file generation_config.json from cache at /blue/woodard/share/Relation-Extraction/LLM_for_RE/cache/models--mistralai--Mistral-Large-Instruct-2407/snapshots/496bfde641b03ec15a2496e833b67360f5b0c622/generation_config.json
+Generate config GenerationConfig {
+  "bos_token_id": 1,
+  "eos_token_id": 2
+}
+
+Some parameters are on the meta device device because they were offloaded to the cpu.
+  0%|          | 0/3026 [00:00<?, ?it/s]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+  0%|          | 1/3026 [1:49:54<5541:01:33, 6594.28s/it]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+  0%|          | 2/3026 [5:44:41<9241:37:31, 11001.94s/it]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+  0%|          | 3/3026 [5:58:02<5327:17:30, 6344.11s/it] The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+  0%|          | 4/3026 [8:00:10<5651:19:22, 6732.22s/it]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+  0%|          | 5/3026 [8:56:44<4639:30:58, 5528.72s/it]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+  0%|          | 6/3026 [9:05:52<3217:23:04, 3835.29s/it]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+  0%|          | 7/3026 [10:22:45<3429:17:49, 4089.26s/it]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+  0%|          | 8/3026 [11:28:59<3397:33:23, 4052.75s/it]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+  0%|          | 9/3026 [11:35:53<2443:10:24, 2915.29s/it]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+  0%|          | 10/3026 [11:57:56<2030:21:23, 2423.50s/it]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+  0%|          | 11/3026 [12:08:30<1571:07:12, 1875.96s/it]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+  0%|          | 12/3026 [12:17:53<1236:06:12, 1476.43s/it]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+  0%|          | 13/3026 [12:27:46<1011:48:16, 1208.93s/it]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+  0%|          | 14/3026 [12:37:01<846:13:31, 1011.42s/it] The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+  0%|          | 15/3026 [13:05:38<1023:42:24, 1223.96s/it]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+  1%|          | 16/3026 [15:51:13<3215:42:05, 3846.02s/it]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+  1%|          | 17/3026 [16:01:31<2403:24:00, 2875.45s/it]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+  1%|          | 18/3026 [17:15:05<2788:52:06, 3337.74s/it]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+  1%|          | 19/3026 [22:05:53<6327:48:44, 7575.70s/it]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+  1%|          | 20/3026 [22:23:58<4698:30:39, 5626.96s/it]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
+slurmstepd: error: *** JOB 40522142 ON c1006a-s17 CANCELLED AT 2024-08-09T23:14:56 DUE TO TIME LIMIT ***
