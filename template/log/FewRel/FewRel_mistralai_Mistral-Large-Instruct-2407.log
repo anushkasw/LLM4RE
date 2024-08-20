@@ -1,91 +1,0 @@
-Start Date : Thu Aug  8 23:14:30 EDT 2024
-Host       : c1100a-s23
-Directory  : /blue/woodard/share/Relation-Extraction/LLM_for_RE/template
-Running FewRel_mistralai_Mistral-Large-Instruct-2407 on 8 CPU cores
-
-Dataset: FewRel
-Model: mistralai/Mistral-Large-Instruct-2407
-K: 1, seed: 13, dataset: FewRel
---------------------------------------------------------------------
-
-/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/xformers/ops/fmha/flash.py:211: FutureWarning: `torch.library.impl_abstract` was renamed to `torch.library.register_fake`. Please use that instead; we will remove `torch.library.impl_abstract` in a future version of PyTorch.
-  @torch.library.impl_abstract("xformers_flash::flash_fwd")
-/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/xformers/ops/fmha/flash.py:344: FutureWarning: `torch.library.impl_abstract` was renamed to `torch.library.register_fake`. Please use that instead; we will remove `torch.library.impl_abstract` in a future version of PyTorch.
-  @torch.library.impl_abstract("xformers_flash::flash_bwd")
-loading file tokenizer.model from cache at /blue/woodard/share/Relation-Extraction/LLM_for_RE/cache/models--mistralai--Mistral-Large-Instruct-2407/snapshots/496bfde641b03ec15a2496e833b67360f5b0c622/tokenizer.model
-loading file tokenizer.json from cache at /blue/woodard/share/Relation-Extraction/LLM_for_RE/cache/models--mistralai--Mistral-Large-Instruct-2407/snapshots/496bfde641b03ec15a2496e833b67360f5b0c622/tokenizer.json
-loading file added_tokens.json from cache at None
-loading file special_tokens_map.json from cache at None
-loading file tokenizer_config.json from cache at /blue/woodard/share/Relation-Extraction/LLM_for_RE/cache/models--mistralai--Mistral-Large-Instruct-2407/snapshots/496bfde641b03ec15a2496e833b67360f5b0c622/tokenizer_config.json
-loading configuration file config.json from cache at /blue/woodard/share/Relation-Extraction/LLM_for_RE/cache/models--mistralai--Mistral-Large-Instruct-2407/snapshots/496bfde641b03ec15a2496e833b67360f5b0c622/config.json
-Model config MistralConfig {
-  "_name_or_path": "mistralai/Mistral-Large-Instruct-2407",
-  "architectures": [
-    "MistralForCausalLM"
-  ],
-  "attention_dropout": 0.0,
-  "bos_token_id": 1,
-  "eos_token_id": 2,
-  "head_dim": 128,
-  "hidden_act": "silu",
-  "hidden_size": 12288,
-  "initializer_range": 0.02,
-  "intermediate_size": 28672,
-  "max_position_embeddings": 131072,
-  "model_type": "mistral",
-  "num_attention_heads": 96,
-  "num_hidden_layers": 88,
-  "num_key_value_heads": 8,
-  "rms_norm_eps": 1e-05,
-  "rope_theta": 1000000.0,
-  "sliding_window": null,
-  "tie_word_embeddings": false,
-  "torch_dtype": "bfloat16",
-  "transformers_version": "4.44.0",
-  "use_cache": true,
-  "vocab_size": 32768
-}
-
-loading weights file model.safetensors from cache at /blue/woodard/share/Relation-Extraction/LLM_for_RE/cache/models--mistralai--Mistral-Large-Instruct-2407/snapshots/496bfde641b03ec15a2496e833b67360f5b0c622/model.safetensors.index.json
-Will use torch_dtype=torch.bfloat16 as defined in model's config object
-Instantiating MistralForCausalLM model under default dtype torch.bfloat16.
-Generate config GenerationConfig {
-  "bos_token_id": 1,
-  "eos_token_id": 2
-}
-
-Token is valid (permission: fineGrained).
-[1m[31mCannot authenticate through git-credential as no helper is defined on your machine.
-You might have to re-authenticate when pushing to the Hugging Face Hub.
-Run the following command in your terminal in case you want to set the 'store' credential helper as default.
-
-git config --global credential.helper store
-
-Read https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage for more details.[0m
-Token has not been saved to git credential helper.
-Your token has been saved to /home/tpan1/.cache/huggingface/token
-Login successful
-Loading mistralai/Mistral-Large-Instruct-2407
-Loading model
-Loading checkpoint shards:   0%|          | 0/51 [00:00<?, ?it/s]Loading checkpoint shards:   2%|▏         | 1/51 [03:35<2:59:28, 215.37s/it]Loading checkpoint shards:   4%|▍         | 2/51 [03:59<1:24:15, 103.17s/it]Loading checkpoint shards:   6%|▌         | 3/51 [04:03<46:00, 57.50s/it]   Loading checkpoint shards:   8%|▊         | 4/51 [04:47<41:01, 52.38s/it]Loading checkpoint shards:  10%|▉         | 5/51 [05:06<30:54, 40.31s/it]Loading checkpoint shards:  12%|█▏        | 6/51 [05:12<21:31, 28.70s/it]Loading checkpoint shards:  14%|█▎        | 7/51 [05:20<16:08, 22.00s/it]Loading checkpoint shards:  16%|█▌        | 8/51 [05:36<14:24, 20.10s/it]Loading checkpoint shards:  18%|█▊        | 9/51 [05:49<12:29, 17.85s/it]Loading checkpoint shards:  20%|█▉        | 10/51 [05:53<09:08, 13.39s/it]Loading checkpoint shards:  22%|██▏       | 11/51 [09:09<46:09, 69.24s/it]Loading checkpoint shards:  24%|██▎       | 12/51 [12:48<1:14:39, 114.86s/it]Loading checkpoint shards:  25%|██▌       | 13/51 [16:31<1:33:29, 147.62s/it]Loading checkpoint shards:  27%|██▋       | 14/51 [17:47<1:17:40, 125.97s/it]Loading checkpoint shards:  29%|██▉       | 15/51 [20:59<1:27:32, 145.89s/it]Loading checkpoint shards:  31%|███▏      | 16/51 [21:02<1:00:01, 102.90s/it]Loading checkpoint shards:  33%|███▎      | 17/51 [21:08<41:52, 73.89s/it]   Loading checkpoint shards:  35%|███▌      | 18/51 [21:08<28:26, 51.72s/it]Loading checkpoint shards:  37%|███▋      | 19/51 [21:47<25:25, 47.68s/it]Loading checkpoint shards:  39%|███▉      | 20/51 [21:49<17:35, 34.03s/it]Loading checkpoint shards:  41%|████      | 21/51 [21:49<11:57, 23.91s/it]Loading checkpoint shards:  43%|████▎     | 22/51 [21:53<08:40, 17.95s/it]Loading checkpoint shards:  45%|████▌     | 23/51 [21:54<05:54, 12.66s/it]Loading checkpoint shards:  47%|████▋     | 24/51 [21:54<04:00,  8.93s/it]Loading checkpoint shards:  49%|████▉     | 25/51 [21:54<02:44,  6.34s/it]Loading checkpoint shards:  51%|█████     | 26/51 [21:59<02:28,  5.94s/it]Loading checkpoint shards:  53%|█████▎    | 27/51 [22:24<04:40, 11.70s/it]Loading checkpoint shards:  55%|█████▍    | 28/51 [22:31<03:53, 10.17s/it]Loading checkpoint shards:  57%|█████▋    | 29/51 [22:31<02:38,  7.22s/it]Loading checkpoint shards:  59%|█████▉    | 30/51 [22:37<02:23,  6.85s/it]Loading checkpoint shards:  61%|██████    | 31/51 [22:40<01:51,  5.57s/it]Loading checkpoint shards:  63%|██████▎   | 32/51 [22:40<01:15,  3.98s/it]Loading checkpoint shards:  65%|██████▍   | 33/51 [22:41<00:52,  2.94s/it]Loading checkpoint shards:  67%|██████▋   | 34/51 [22:41<00:38,  2.26s/it]Loading checkpoint shards:  69%|██████▊   | 35/51 [22:45<00:42,  2.64s/it]Loading checkpoint shards:  71%|███████   | 36/51 [22:45<00:29,  1.93s/it]Loading checkpoint shards:  73%|███████▎  | 37/51 [22:46<00:20,  1.48s/it]Loading checkpoint shards:  75%|███████▍  | 38/51 [22:46<00:14,  1.12s/it]Loading checkpoint shards:  76%|███████▋  | 39/51 [22:46<00:10,  1.16it/s]Loading checkpoint shards:  78%|███████▊  | 40/51 [23:01<00:57,  5.19s/it]Loading checkpoint shards:  80%|████████  | 41/51 [23:02<00:38,  3.84s/it]Loading checkpoint shards:  82%|████████▏ | 42/51 [23:02<00:24,  2.77s/it]Loading checkpoint shards:  84%|████████▍ | 43/51 [23:05<00:22,  2.86s/it]Loading checkpoint shards:  86%|████████▋ | 44/51 [23:06<00:14,  2.08s/it]Loading checkpoint shards:  88%|████████▊ | 45/51 [23:06<00:09,  1.57s/it]Loading checkpoint shards:  90%|█████████ | 46/51 [23:07<00:06,  1.24s/it]Loading checkpoint shards:  92%|█████████▏| 47/51 [23:07<00:03,  1.06it/s]Loading checkpoint shards:  94%|█████████▍| 48/51 [23:09<00:04,  1.46s/it]Loading checkpoint shards:  96%|█████████▌| 49/51 [23:10<00:02,  1.21s/it]Loading checkpoint shards:  98%|█████████▊| 50/51 [23:10<00:00,  1.06it/s]Loading checkpoint shards: 100%|██████████| 51/51 [23:11<00:00,  1.40it/s]Loading checkpoint shards: 100%|██████████| 51/51 [23:11<00:00, 27.28s/it]
-All model checkpoint weights were used when initializing MistralForCausalLM.
-
-All the weights of MistralForCausalLM were initialized from the model checkpoint at mistralai/Mistral-Large-Instruct-2407.
-If your task is similar to the task the model of the checkpoint was trained on, you can already use MistralForCausalLM for predictions without further training.
-loading configuration file generation_config.json from cache at /blue/woodard/share/Relation-Extraction/LLM_for_RE/cache/models--mistralai--Mistral-Large-Instruct-2407/snapshots/496bfde641b03ec15a2496e833b67360f5b0c622/generation_config.json
-Generate config GenerationConfig {
-  "bos_token_id": 1,
-  "eos_token_id": 2
-}
-
-Some parameters are on the meta device device because they were offloaded to the cpu.
-  0%|          | 0/2412 [00:00<?, ?it/s]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
-Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
-The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
-  0%|          | 1/2412 [5:47:04<13946:39:58, 20824.55s/it]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
-Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
-  0%|          | 2/2412 [18:20:46<23548:24:24, 35176.04s/it]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
-Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
-  0%|          | 3/2412 [21:10:56<15910:11:12, 23776.12s/it]The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
-Setting `pad_token_id` to `eos_token_id`:2 for open-end generation.
-slurmstepd: error: *** JOB 40522140 ON c1100a-s23 CANCELLED AT 2024-08-09T23:14:56 DUE TO TIME LIMIT ***
