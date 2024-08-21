@@ -133,7 +133,7 @@ class HFModelPipelines:
     This pipeline should be able to access all available HF models in transformers.
     model_id: The official name of the model (please check HF). 
     '''
-    def __init__(self, access_token, cache_dir="/blue/woodard/share/Relation-Extraction/LLM_for_RE/cache"):
+    def __init__(self, access_token, cache_dir="/blue/woodard/share/HF_models/"):
         self.cache_dir = cache_dir
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.access_token = access_token

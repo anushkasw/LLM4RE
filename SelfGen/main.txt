@@ -1,0 +1,3 @@
+Read Me:
+1. sg_icl is the original repo
+2. SelfGen should be used in preprocessing phase
