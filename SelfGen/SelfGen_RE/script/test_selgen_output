@@ -1,5 +1,172 @@
-Start Date : Wed Aug 21 16:18:30 EDT 2024
-Host       : c1101a-s35
+Start Date : Thu Aug 22 12:36:12 EDT 2024
+Host       : c1103a-s23
 Directory  : /blue/woodard/share/Relation-Extraction/bell/LLM4RE/SelfGen/SelfGen_RE/script
 Running test_selgen on 8 CPU cores
 
+/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/xformers/ops/fmha/flash.py:211: FutureWarning: `torch.library.impl_abstract` was renamed to `torch.library.register_fake`. Please use that instead; we will remove `torch.library.impl_abstract` in a future version of PyTorch.
+  @torch.library.impl_abstract("xformers_flash::flash_fwd")
+/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/xformers/ops/fmha/flash.py:344: FutureWarning: `torch.library.impl_abstract` was renamed to `torch.library.register_fake`. Please use that instead; we will remove `torch.library.impl_abstract` in a future version of PyTorch.
+  @torch.library.impl_abstract("xformers_flash::flash_bwd")
+loading file tokenizer.model from cache at /blue/woodard/share/HF_models/models--mistralai--Mistral-Large-Instruct-2407/snapshots/566a5a1fa869af019a1d937c231a76dbcb4b0d24/tokenizer.model
+loading file tokenizer.json from cache at /blue/woodard/share/HF_models/models--mistralai--Mistral-Large-Instruct-2407/snapshots/566a5a1fa869af019a1d937c231a76dbcb4b0d24/tokenizer.json
+loading file added_tokens.json from cache at None
+loading file special_tokens_map.json from cache at None
+loading file tokenizer_config.json from cache at /blue/woodard/share/HF_models/models--mistralai--Mistral-Large-Instruct-2407/snapshots/566a5a1fa869af019a1d937c231a76dbcb4b0d24/tokenizer_config.json
+loading configuration file config.json from cache at /blue/woodard/share/HF_models/models--mistralai--Mistral-Large-Instruct-2407/snapshots/566a5a1fa869af019a1d937c231a76dbcb4b0d24/config.json
+Model config MistralConfig {
+  "_name_or_path": "mistralai/Mistral-Large-Instruct-2407",
+  "architectures": [
+    "MistralForCausalLM"
+  ],
+  "attention_dropout": 0.0,
+  "bos_token_id": 1,
+  "eos_token_id": 2,
+  "head_dim": 128,
+  "hidden_act": "silu",
+  "hidden_size": 12288,
+  "initializer_range": 0.02,
+  "intermediate_size": 28672,
+  "max_position_embeddings": 131072,
+  "model_type": "mistral",
+  "num_attention_heads": 96,
+  "num_hidden_layers": 88,
+  "num_key_value_heads": 8,
+  "rms_norm_eps": 1e-05,
+  "rope_theta": 1000000.0,
+  "sliding_window": null,
+  "tie_word_embeddings": false,
+  "torch_dtype": "float16",
+  "transformers_version": "4.44.1",
+  "use_cache": true,
+  "vocab_size": 32768
+}
+
+loading weights file model.safetensors from cache at /blue/woodard/share/HF_models/models--mistralai--Mistral-Large-Instruct-2407/snapshots/566a5a1fa869af019a1d937c231a76dbcb4b0d24/model.safetensors.index.json
+Instantiating MistralForCausalLM model under default dtype torch.float16.
+Generate config GenerationConfig {
+  "bos_token_id": 1,
+  "eos_token_id": 2
+}
+
+08/22/2024 12:38:28 - INFO - accelerate.utils.modeling - We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+Token is valid (permission: fineGrained).
+[1m[31mCannot authenticate through git-credential as no helper is defined on your machine.
+You might have to re-authenticate when pushing to the Hugging Face Hub.
+Run the following command in your terminal in case you want to set the 'store' credential helper as default.
+
+git config --global credential.helper store
+
+Read https://git-scm.com/book/en/v2/Git-Tools-Credential-Storage for more details.[0m
+Token has not been saved to git credential helper.
+Your token has been saved to /home/tpan1/.cache/huggingface/token
+Login successful
+Loading mistralai/Mistral-Large-Instruct-2407
+Loading model
+Loading checkpoint shards:   0%|          | 0/51 [00:00<?, ?it/s]Loading checkpoint shards:   2%|▏         | 1/51 [01:20<1:07:18, 80.77s/it]Loading checkpoint shards:   4%|▍         | 2/51 [02:31<1:01:17, 75.06s/it]Loading checkpoint shards:   6%|▌         | 3/51 [03:37<56:33, 70.71s/it]  Loading checkpoint shards:   8%|▊         | 4/51 [05:00<59:17, 75.69s/it]Loading checkpoint shards:  10%|▉         | 5/51 [05:50<50:50, 66.31s/it]Loading checkpoint shards:  12%|█▏        | 6/51 [06:47<47:20, 63.12s/it]Loading checkpoint shards:  14%|█▎        | 7/51 [08:32<56:27, 76.98s/it]Loading checkpoint shards:  16%|█▌        | 8/51 [09:22<48:55, 68.27s/it]Loading checkpoint shards:  18%|█▊        | 9/51 [10:02<41:37, 59.46s/it]Loading checkpoint shards:  20%|█▉        | 10/51 [11:17<43:49, 64.14s/it]Loading checkpoint shards:  22%|██▏       | 11/51 [12:52<49:07, 73.69s/it]Loading checkpoint shards:  24%|██▎       | 12/51 [13:59<46:40, 71.81s/it]Loading checkpoint shards:  25%|██▌       | 13/51 [15:21<47:19, 74.72s/it]Loading checkpoint shards:  27%|██▋       | 14/51 [21:43<1:43:15, 167.45s/it]Loading checkpoint shards:  29%|██▉       | 15/51 [25:49<1:54:41, 191.15s/it]Loading checkpoint shards:  31%|███▏      | 16/51 [32:10<2:24:55, 248.44s/it]Loading checkpoint shards:  33%|███▎      | 17/51 [35:08<2:08:48, 227.32s/it]Loading checkpoint shards:  35%|███▌      | 18/51 [38:00<1:55:49, 210.58s/it]Loading checkpoint shards:  37%|███▋      | 19/51 [39:13<1:30:12, 169.14s/it]Loading checkpoint shards:  39%|███▉      | 20/51 [40:39<1:14:36, 144.39s/it]Loading checkpoint shards:  41%|████      | 21/51 [42:07<1:03:41, 127.37s/it]Loading checkpoint shards:  43%|████▎     | 22/51 [43:13<52:43, 109.09s/it]  Loading checkpoint shards:  45%|████▌     | 23/51 [44:45<48:27, 103.83s/it]Loading checkpoint shards:  47%|████▋     | 24/51 [46:29<46:46, 103.96s/it]Loading checkpoint shards:  49%|████▉     | 25/51 [47:43<41:06, 94.88s/it] Loading checkpoint shards:  51%|█████     | 26/51 [48:33<33:58, 81.53s/it]Loading checkpoint shards:  53%|█████▎    | 27/51 [50:07<34:03, 85.17s/it]Loading checkpoint shards:  55%|█████▍    | 28/51 [51:52<34:58, 91.23s/it]Loading checkpoint shards:  57%|█████▋    | 29/51 [53:46<35:55, 97.97s/it]Loading checkpoint shards:  59%|█████▉    | 30/51 [54:52<30:54, 88.31s/it]Loading checkpoint shards:  61%|██████    | 31/51 [56:34<30:49, 92.45s/it]Loading checkpoint shards:  63%|██████▎   | 32/51 [57:38<26:32, 83.83s/it]Loading checkpoint shards:  65%|██████▍   | 33/51 [58:42<23:22, 77.90s/it]Loading checkpoint shards:  67%|██████▋   | 34/51 [59:37<20:06, 70.96s/it]Loading checkpoint shards:  69%|██████▊   | 35/51 [1:00:23<16:58, 63.63s/it]Loading checkpoint shards:  71%|███████   | 36/51 [1:01:48<17:31, 70.09s/it]Loading checkpoint shards:  73%|███████▎  | 37/51 [1:02:43<15:16, 65.46s/it]Loading checkpoint shards:  75%|███████▍  | 38/51 [1:03:59<14:52, 68.63s/it]Loading checkpoint shards:  76%|███████▋  | 39/51 [1:05:22<14:35, 73.00s/it]Loading checkpoint shards:  78%|███████▊  | 40/51 [1:06:42<13:45, 75.09s/it]Loading checkpoint shards:  80%|████████  | 41/51 [1:07:54<12:20, 74.04s/it]Loading checkpoint shards:  82%|████████▏ | 42/51 [1:09:19<11:35, 77.29s/it]Loading checkpoint shards:  84%|████████▍ | 43/51 [1:10:33<10:11, 76.41s/it]Loading checkpoint shards:  86%|████████▋ | 44/51 [1:11:33<08:20, 71.51s/it]Loading checkpoint shards:  88%|████████▊ | 45/51 [1:12:56<07:29, 74.96s/it]Loading checkpoint shards:  90%|█████████ | 46/51 [1:14:23<06:32, 78.44s/it]Loading checkpoint shards:  92%|█████████▏| 47/51 [1:16:02<05:39, 84.89s/it]Loading checkpoint shards:  94%|█████████▍| 48/51 [1:17:23<04:10, 83.65s/it]Loading checkpoint shards:  96%|█████████▌| 49/51 [1:18:33<02:39, 79.54s/it]Loading checkpoint shards:  98%|█████████▊| 50/51 [1:19:30<01:12, 72.71s/it]Loading checkpoint shards: 100%|██████████| 51/51 [1:20:40<00:00, 71.98s/it]Loading checkpoint shards: 100%|██████████| 51/51 [1:20:40<00:00, 94.92s/it]
+All model checkpoint weights were used when initializing MistralForCausalLM.
+
+All the weights of MistralForCausalLM were initialized from the model checkpoint at mistralai/Mistral-Large-Instruct-2407.
+If your task is similar to the task the model of the checkpoint was trained on, you can already use MistralForCausalLM for predictions without further training.
+loading configuration file generation_config.json from cache at /blue/woodard/share/HF_models/models--mistralai--Mistral-Large-Instruct-2407/snapshots/566a5a1fa869af019a1d937c231a76dbcb4b0d24/generation_config.json
+Generate config GenerationConfig {
+  "bos_token_id": 1,
+  "eos_token_id": 2
+}
+
+08/22/2024 13:59:13 - WARNING - accelerate.big_modeling - Some parameters are on the meta device device because they were offloaded to the cpu.
+08/22/2024 13:59:13 - INFO - __main__ - ***** Generating In-Context Samples *****
+Disabling tokenizer parallelism, we're using DataLoader multithreading already
+Traceback (most recent call last):
+  File "/blue/woodard/share/Relation-Extraction/bell/LLM4RE/SelfGen/SelfGen_RE/sg_icl.py", line 145, in <module>
+    main()
+  File "/blue/woodard/share/Relation-Extraction/bell/LLM4RE/SelfGen/SelfGen_RE/sg_icl.py", line 88, in main
+    generated_outputs = text_generation_pipeline(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/transformers/pipelines/text_generation.py", line 262, in __call__
+    return super().__call__(text_inputs, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/transformers/pipelines/base.py", line 1238, in __call__
+    outputs = list(final_iterator)
+              ^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/transformers/pipelines/pt_utils.py", line 124, in __next__
+    item = next(self.iterator)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/transformers/pipelines/pt_utils.py", line 125, in __next__
+    processed = self.infer(item, **self.params)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/transformers/pipelines/base.py", line 1164, in forward
+    model_outputs = self._forward(model_inputs, **forward_params)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/transformers/pipelines/text_generation.py", line 351, in _forward
+    generated_sequence = self.model.generate(input_ids=input_ids, attention_mask=attention_mask, **generate_kwargs)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/transformers/generation/utils.py", line 2024, in generate
+    result = self._sample(
+             ^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/transformers/generation/utils.py", line 2982, in _sample
+    outputs = self(**model_inputs, return_dict=True)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/accelerate/hooks.py", line 169, in new_forward
+    output = module._old_forward(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/transformers/models/mistral/modeling_mistral.py", line 1033, in forward
+    outputs = self.model(
+              ^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/transformers/models/mistral/modeling_mistral.py", line 808, in forward
+    layer_outputs = decoder_layer(
+                    ^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/accelerate/hooks.py", line 169, in new_forward
+    output = module._old_forward(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/transformers/models/mistral/modeling_mistral.py", line 564, in forward
+    hidden_states = self.mlp(hidden_states)
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/accelerate/hooks.py", line 169, in new_forward
+    output = module._old_forward(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/transformers/models/mistral/modeling_mistral.py", line 156, in forward
+    return self.down_proj(self.act_fn(self.gate_proj(hidden_state)) * self.up_proj(hidden_state))
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/accelerate/hooks.py", line 164, in new_forward
+    args, kwargs = module._hf_hook.pre_forward(module, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/accelerate/hooks.py", line 354, in pre_forward
+    set_module_tensor_to_device(
+  File "/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/lib/python3.11/site-packages/accelerate/utils/modeling.py", line 416, in set_module_tensor_to_device
+    new_value = value.to(device)
+                ^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 672.00 MiB. GPU 0 has a total capacity of 79.14 GiB of which 343.19 MiB is free. Including non-PyTorch memory, this process has 68.32 GiB memory in use. Process 3605112 has 10.46 GiB memory in use. Of the allocated memory 67.81 GiB is allocated by PyTorch, and 15.65 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
+Script execution complete!
