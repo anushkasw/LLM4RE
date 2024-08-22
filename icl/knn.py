@@ -38,7 +38,7 @@ def generate_ft_dict(args):
         knn_ft_dict[key] = [train_dict[int(x)] for x in knn_dict[key]]
     return knn_ft_dict
 
-def get_demonstrations(args, example_dict, reltoid):
+def get_demonstrations(args, example_dict):
     '''
     Trains the demonstration models
     :param args:
@@ -46,28 +46,23 @@ def get_demonstrations(args, example_dict, reltoid):
     :param reltoid:
     :return:
     '''
-    ft_dict, gpu_index_flat, train_dict, train_sentences, knn_model = None, None, None, None, None
+    train_dict, knn_model = None, None
     train_list = [x for y in example_dict.values() for x in y]
     if args.no_na:
-        if args.task == "semeval":
-            train_list = [x for x in train_list if reltoid[x["relations"][0][0][4]] != 0]
-        else:
-            train_list = [x for x in train_list if x["relations"] != [[]]]
-    if args.entity_info:
-        train_dict = {instance(x).reference:x for x in train_list}
-        train_sentences = [instance(x).reference for x in train_list]
-    else:
-        train_dict = {instance(x).sentence:x for x in train_list}
-        train_sentences = [instance(x).sentence for x in train_list]
+        train_list = [x for x in train_list if x["relations"] != 'NONE']
+
+    train_dict = {" ".join(x["token"]):x for x in train_list}
+    train_sentences = [" ".join(x["token"]) for x in train_list]
 
     knn_model = SimCSE("princeton-nlp/sup-simcse-roberta-large")
     #knn_model = SimCSE("princeton-nlp/sup-simcse-bert-base-uncased")
     knn_model.build_index(train_sentences, device="cuda")
-    return ft_dict, gpu_index_flat, train_dict, train_sentences, knn_model
+    return train_dict, knn_model
 
-def generate_ft_example(tmp_dict, ft_dict, reltoid, idtoprompt, demo, args):
-    tmp_example = instance(tmp_dict)
 
-    example_list = ft_dict[tmp_example.id]
+def find_knn_example(model, test_dict, train_dict, k):
+    test_sentences = " ".join(test_dict["token"])
 
-    return example_list
+    knn_result = model.search(test_sentences, device="cpu", threshold=0.0, top_k=k)
+    knn_list = [train_dict[x[0]] for x in knn_result]
+    return knn_list

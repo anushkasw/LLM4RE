@@ -24,21 +24,13 @@ class DataProcessor:
             self.rel2id['NONE'] = self.rel2id.pop('no_relation')
             args.na_idx = self.rel2id['NONE']
 
-        self.rel2prompt = self.get_rel2prompt(args)
+        self.rel2prompt, self.id2prompt = self.get_rel2prompt(args)
 
-        # Demonstration Retrieval
-        if args.demo == 'random':
-            # This sets the training data path to the pre-defined k-shot splits present in the Data directory
-            self.train_path = f'{args.data_dir}/{args.task}/k-shot/seed-{args.data_seed}/{args.k}-shot/train.json'
-        else:
-            self.train_path = f'{args.data_dir}/{args.task}/train.json'
-        self.test_path = f'{args.data_dir}/{args.task}/k-shot/seed-{args.data_seed}/test.json'
+    def get_train_examples(self, train_path):
+        return self.get_examples(train_path)
 
-    def get_train_examples(self):
-        return self.get_examples(self.train_path)
-
-    def get_test_examples(self):
-        return self.get_examples(self.test_path)
+    def get_test_examples(self, test_path):
+        return self.get_examples(test_path)
 
     def get_examples(self, example_path):
         example_dict = {k:list() for k in self.rel2id.values()}
@@ -56,6 +48,7 @@ class DataProcessor:
 
     def get_rel2prompt(self, args):
         rel2prompt = {}
+        id2prompt = {}
         for name, id in self.rel2id.items():
             if args.task == 'wiki80':
                 labels = name.split(' ')
@@ -118,6 +111,8 @@ class DataProcessor:
 
             if args.task == 'semeval_nodir':
                 rel2prompt[name] = ' and '.join(labels).upper()
+                id2prompt[id] = ' and '.join(labels).upper()
             else:
                 rel2prompt[name] = ' '.join(labels).upper()
-        return rel2prompt
+                id2prompt[id] = ' and '.join(labels).upper()
+        return rel2prompt, id2prompt
