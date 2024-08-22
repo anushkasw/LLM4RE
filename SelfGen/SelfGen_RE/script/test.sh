@@ -25,6 +25,7 @@ export PATH=/blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM/bin:$PATH
 conda activate /blue/woodard/share/Relation-Extraction/conda_envs/RE_LLM
 
 export CUDA_VISIBLE_DEVICES=0
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
 python3 /blue/woodard/share/Relation-Extraction/bell/LLM4RE/SelfGen/SelfGen_RE/sg_icl.py \
   --task "dummy_tacred" \
@@ -38,6 +39,7 @@ python3 /blue/woodard/share/Relation-Extraction/bell/LLM4RE/SelfGen/SelfGen_RE/s
   --no_repeat_ngram_size 2 \
   --temperature 0.5 \
   --access_token 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 \
-  --demo sel_gen
+  --demo sel_gen \
+  --batch_size 2
 
 echo "Script execution complete!"

@@ -149,7 +149,7 @@ class HFModelPipelines:
         print(f'Loading {model_id}')
         tokenizer = AutoTokenizer.from_pretrained(model_id, cache_dir=self.cache_dir)
         print('Loading model')
-        model = AutoModelForCausalLM.from_pretrained(model_id, torch_dtype="auto", device_map="auto", trust_remote_code=True, cache_dir=self.cache_dir, low_cpu_mem_usage=True)
+        model = AutoModelForCausalLM.from_pretrained(model_id, torch_dtype=torch.float16, device_map="auto", trust_remote_code=True, cache_dir=self.cache_dir, low_cpu_mem_usage=True)
 
         # # Parallel processing - CUDA
         # if torch.cuda.device_count() > 1:

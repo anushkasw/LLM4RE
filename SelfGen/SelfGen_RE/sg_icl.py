@@ -25,8 +25,9 @@ def main():
     parser.add_argument('--generation_min_length', type=int, default=10)
     parser.add_argument("--no_repeat_ngram_size", type=int, default=2)
     parser.add_argument("--temperature", type=float, default=0.5)
-    parser.add_argument("--access_token", type=str, required=True, help="Hugging Face access token") 
+    parser.add_argument("--access_token", type=str, required=True, help="Hugging Face access token")
     parser.add_argument("--demo", type=str, required=True)
+    parser.add_argument("--batch_size", type=int, default=4, help="Batch size for processing") 
     args = parser.parse_args()
 
     logging.basicConfig(format="%(asctime)s - %(levelname)s - %(name)s - %(message)s", datefmt="%m/%d/%Y %H:%M:%S", level=logging.INFO)
@@ -56,49 +57,80 @@ def main():
     logger.info("***** Generating In-Context Samples *****")
 
     text_generation_pipeline.model.eval()
-    
-    with open(generation_writer, 'w') as file_writer: 
-        data = []
 
-        for step, rel_id in enumerate(examples):
-            for sample in examples[rel_id]:
-                tokens = sample['token']  
-                sentence = ' '.join(tokens)
-                sentence = sentence.replace(" ,", ",").replace(" .", ".").replace(" '", "'").replace(" ``", "``").replace("'' ", "''")
-                
-                original_input = args.prefix + sentence + args.infix + args.postfix
-                label = rel_id
-                label_token = data_processor.rel2prompt[sample['relation']]
+    data = []
+    all_sentences = []
+    all_labels = []
 
-                label_dependent_input = original_input.replace(args.label_token, label_token)
+    for step, rel_id in enumerate(examples):
+        for sample in examples[rel_id]:
+            tokens = sample['token']  
+            sentence = ' '.join(tokens)
+            sentence = sentence.replace(" ,", ",").replace(" .", ".").replace(" '", "'").replace(" ``", "``").replace("'' ", "''")
 
-                # Generate in-context samples using the pipeline
+            original_input = args.prefix + sentence + args.infix + args.postfix
+            label = rel_id
+            label_token = data_processor.rel2prompt[sample['relation']]
+
+            label_dependent_input = original_input.replace(args.label_token, label_token)
+
+            # Accumulate sentences for batch processing
+            all_sentences.append(label_dependent_input)
+            all_labels.append({
+                "index": step,
+                "label": label,
+                "sentence": sentence
+            })
+
+            # Process batch when batch size is reached
+            if len(all_sentences) >= args.batch_size:
+                # Generate in-context samples using the pipeline in batch
                 generated_outputs = text_generation_pipeline(
-                    label_dependent_input,
-                    max_length=len(label_dependent_input) + args.generation_max_length,
-                    min_length=len(label_dependent_input) + args.generation_min_length,
+                    all_sentences,
+                    max_length=max(len(s) + args.generation_max_length for s in all_sentences),
+                    min_length=args.generation_min_length,
                     temperature=args.temperature,
                     truncation=True,
                     do_sample=True,
                     pad_token_id=text_generation_pipeline.tokenizer.eos_token_id
                 )
 
-                # Process the generated outputs
-                generated_texts = [output['generated_text'].strip() for output in generated_outputs]
+                for i, output in enumerate(generated_outputs):
+                    generated_text = output[0] if isinstance(output, list) else output['generated_text'].strip()
+                    
+                    row_dict = {
+                        "index": all_labels[i]["index"],
+                        "label": all_labels[i]["label"],
+                        "sentence": all_labels[i]["sentence"],
+                        "generated_samples": generated_text
+                    }
+                    data.append(row_dict)
 
-                # Create a dictionary for each row
-                row_dict = {
-                    "index": step,
-                    "label": label,
-                    "sentence": sentence,
-                    "generated_samples": generated_texts
-                }
+                # Clear the lists after processing the batch
+                all_sentences = []
+                all_labels = []
 
-                # Append the dictionary to the list
-                data.append(row_dict)
+    # Process any remaining sentences that didn't fill up the last batch
+    if all_sentences:
+        generated_outputs = text_generation_pipeline(
+            all_sentences,
+            max_length=max(len(s) + args.generation_max_length for s in all_sentences),
+            min_length=args.generation_min_length,
+            temperature=args.temperature,
+            truncation=True,
+            do_sample=True,
+            pad_token_id=text_generation_pipeline.tokenizer.eos_token_id
+        )
 
-        # # Write the entire list of dictionaries to a JSON file
-        # json.dump(data, file_writer, indent=4)
+        for i, output in enumerate(generated_outputs):
+            row_dict = {
+                "index": all_labels[i]["index"],
+                "label": all_labels[i]["label"],
+                "sentence": all_labels[i]["sentence"],
+                "generated_samples": output['generated_text'].strip()
+            }
+            data.append(row_dict)
+
     # Ensure data is being written correctly
     if data:
         logger.info(f"Writing {len(data)} samples to the JSON file.")
