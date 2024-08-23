@@ -5,7 +5,6 @@ import numpy as np
 import json
 
 import torch
-import torch.nn as nn
 
 from tqdm import tqdm
 
@@ -30,8 +29,8 @@ def main(args):
     os.makedirs(outpath, exist_ok=True)
 
     data_processor = DataProcessor(args)
-    for k in [1, 5, 10, 15, 20, 25, 30]:
-        for seed in [13, 21, 42, 87, 100]:
+    for k in [1, 5, 10, 20, 30]:
+        for seed in [13, 42, 100]:
             train_path = f'{args.data_dir}/{args.task}/train.json'
             test_path = f'{args.data_dir}/{args.task}/k-shot/seed-{seed}/test.json'
 
@@ -73,3 +72,4 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     main(args)
+    print('\tDone.')
