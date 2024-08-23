@@ -52,6 +52,8 @@ def main(args):
                         f.write('\n')
                     json.dump(demo_mappings, f)
 
+                del demo_dict, test_dict, knn_model, train_dict
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='MentalLlama')
     parser.add_argument("--use_cuda", action='store_true',
