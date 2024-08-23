@@ -1,6 +1,5 @@
 import json
 from simcse import SimCSE
-import faiss
 
 def generate_ft_dict(args):
     ft_dict = {}
