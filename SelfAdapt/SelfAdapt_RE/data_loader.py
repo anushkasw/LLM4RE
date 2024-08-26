@@ -10,39 +10,31 @@ def flatten_list(labels):
             flattened.append(item)
     return flattened
 
-
 class DataProcessor:
-    def __init__(self, args):
-        with open(f'{args.data_dir}/{args.task}/rel2id.json', "r") as f:
+    def __init__(self, cfg):
+        with open(f'{cfg.data_dir}/{cfg.task}/rel2id.json', "r") as f:
             self.rel2id = json.loads(f.read())
 
         # Mapping 'no_relation' and 'Other' labels to 'NONE'
-        if args.task in ["semeval_nodir", "GIDS"]:
+        if cfg.task in ["semeval_nodir", "GIDS"]:
             self.rel2id['NONE'] = self.rel2id.pop('Other')
-            args.na_idx = self.rel2id['NONE']
-        elif args.task in ["tacred", "tacrev", "retacred", "dummy_tacred", "kbp37_nodir"]:
+            cfg.na_idx = self.rel2id['NONE']
+        elif cfg.task in ["tacred", "tacrev", "retacred", "dummy_tacred", "kbp37_nodir"]:
             self.rel2id['NONE'] = self.rel2id.pop('no_relation')
-            args.na_idx = self.rel2id['NONE']
+            cfg.na_idx = self.rel2id['NONE']
 
-        self.rel2prompt = self.get_rel2prompt(args)
+        self.rel2prompt = self.get_rel2prompt(cfg)
 
-        # Demonstration Retrieval
-        # if args.demo == 'sel_gen':
-        #     # This sets the training data path to the pre-defined k-shot splits present in the Data directory
-        #     self.train_path = f'{args.data_dir}/{args.task}/k-shot/seed-{args.data_seed}/{args.k}-shot/train.json'
-        # else:
-        #     self.train_path = f'{args.data_dir}/{args.task}/train.json'
-        # self.test_path = f'{args.data_dir}/{args.task}/k-shot/seed-{args.data_seed}/test.json'
-
-        if args.demo == 'sel_gen':
-            self.train_path = f'{args.data_dir}/{args.task}/train.json'
-        self.test_path = f'{args.data_dir}/{args.task}/test.json'
+        # Load paths for train and test datasets
+        if cfg.demo == 'sel_adapt':
+            self.train_path = f'{cfg.data_dir}/{cfg.task}/train.json'
+        self.test_path = f'{cfg.data_dir}/{cfg.task}/test.json'
 
     def get_train_examples(self):
-        return self.get_examples(self.train_path)
+        return self.flatten_examples(self.get_examples(self.train_path))
 
     def get_test_examples(self):
-        return self.get_examples(self.test_path)
+        return self.flatten_examples(self.get_examples(self.test_path))
 
     def get_examples(self, example_path):
         example_dict = {k:list() for k in self.rel2id.values()}
@@ -58,19 +50,26 @@ class DataProcessor:
                     example_dict[self.rel2id[rel]].append(dict_)
         return example_dict
 
-    def get_rel2prompt(self, args):
+    def flatten_examples(self, example_dict):
+        # Flatten the examples to be a single list of dictionaries
+        flattened_examples = []
+        for examples in example_dict.values():
+            flattened_examples.extend(examples)
+        return flattened_examples
+
+    def get_rel2prompt(self, cfg):
         rel2prompt = {}
         for name, id in self.rel2id.items():
-            if args.task == 'wiki80':
+            if cfg.task == 'wiki80':
                 labels = name.split(' ')
 
-            elif args.task == 'semeval_nodir':
+            elif cfg.task == 'semeval_nodir':
                 labels = name.split('-')
 
-            elif args.task == 'FewRel':
+            elif cfg.task == 'FewRel':
                 labels = name.split('_')
 
-            elif args.task in ['NYT10', 'GIDS']:
+            elif cfg.task in ['NYT10', 'GIDS']:
                 if name == 'Other':
                     labels = ['None']
                 elif name == '/people/person/education./education/education/institution':
@@ -86,7 +85,7 @@ class DataProcessor:
                             labels[idx] = lab.split("_")
                     labels = flatten_list(labels)
 
-            elif args.task == 'WebNLG':
+            elif cfg.task == 'WebNLG':
                 name_mod = re.sub(r"['()]", '', name)
                 labels = name_mod.split(' ')
 
@@ -107,20 +106,20 @@ class DataProcessor:
                     elif any(char.isupper() for char in label0):
                         labels = re.split(r'(?=[A-Z])', label0)
 
-            elif args.task == 'crossRE':
+            elif cfg.task == 'crossRE':
                 if name == "win-defeat":
                     labels = ['win', 'or', 'defeat']
                 else:
                     labels = name.split('-')
 
-            elif args.task in ['tacred', 'tacrev', 'retacred', 'dummy_tacred', 'kbp37']:
+            elif cfg.task in ['tacred', 'tacrev', 'retacred', 'dummy_tacred', 'kbp37']:
                 labels = [name.lower().replace("_", " ").replace("-", " ").replace("per", "person").replace("org",
                                                                                                             "organization").replace(
                     "stateor", "state or ")]
 
             labels = [item.lower() for item in labels]
 
-            if args.task == 'semeval_nodir':
+            if cfg.task == 'semeval_nodir':
                 rel2prompt[name] = ' and '.join(labels).upper()
             else:
                 rel2prompt[name] = ' '.join(labels).upper()
