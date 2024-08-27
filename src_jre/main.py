@@ -30,7 +30,7 @@ def main(args):
     test_dict = data_processor.get_test_examples()
 
     print(f'\tLoading Demo Mapping')
-    if os.path.exists(f'{args.data_dir}/{args.task}/{args.demo}/k-{args.k}.jsonl'):
+    if os.path.exists(f'{args.data_dir}/{args.task}/{args.demo}Demo/k-{args.k}.jsonl'):
         with open(f'{args.data_dir}/{args.task}/{args.demo}/k-{args.k}.jsonl', 'r') as f:
             demo_mapping = json.load(f)
     else:
