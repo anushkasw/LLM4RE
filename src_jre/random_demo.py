@@ -34,7 +34,7 @@ def get_demonstration_mappings(args):
 
     data_processor = DataProcessor(args)
     # for seed in [13, 42, 100]:
-    for k in [5, 10, 20, 30]:
+    for k in [1, 5, 10, 20, 30]:
         train_dict = data_processor.get_train_examples()  # train data
         # train_dict = dict(random.sample(train_dict.items(), 200))
         test_dict = data_processor.get_test_examples()
@@ -46,7 +46,7 @@ def get_demonstration_mappings(args):
             demo_list = get_demonstrations(train_dict, k)
             demo_mappings[input.id] = demo_list
 
-        with open(f'{outpath}/k-{k}.jsonl', 'a') as f:
+        with open(f'{outpath}/k-{k}.jsonl', 'w+') as f:
             if f.tell() > 0:  # Check if file is not empty
                 f.write('\n')
             json.dump(demo_mappings, f)
