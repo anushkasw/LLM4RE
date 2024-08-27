@@ -22,51 +22,29 @@ def set_seed(args):
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
 
-def get_demonstrations(args, example_dict):
-    '''
-    Trains the demonstration models
-    :param args:
-    :param example_dict:
-    :param reltoid:
-    :return:
-    '''
-    train_list = [val for x, val in example_dict.items()]
-    # if args.no_na:
-    #     train_list = [x for x in train_list if x["relations"] != 'NONE']
-
-    train_dict = {x.sentence:x.id for x in train_list}
-    train_sentences = [x.sentence for x in train_list]
-
-    knn_model = SimCSE("princeton-nlp/sup-simcse-roberta-large")
-    #knn_model = SimCSE("princeton-nlp/sup-simcse-bert-base-uncased")
-    knn_model.build_index(train_sentences, device="cuda")
-    return train_dict, knn_model
-
-def find_knn_example(model, test_dict, train_dict, k):
-    test_sentences = " ".join(test_dict.sentence)
-    knn_result = model.search(test_sentences, device="cuda", threshold=0.0, top_k=k)
-    knn_list = [train_dict[x[0]] for x in knn_result]
-    return knn_list
+def get_demonstrations(train_dict, k):
+    train_list = [val for x, val in train_dict.items()]
+    random.shuffle(train_list)
+    demo_list = train_list[0:k]
+    return [x.id for x in demo_list]
 
 def get_demonstration_mappings(args):
     set_seed(args)
-    outpath = f'{args.data_dir}/{args.task}/knn'
+    outpath = f'{args.data_dir}/{args.task}/random'
     os.makedirs(outpath, exist_ok=True)
 
     data_processor = DataProcessor(args)
     # for seed in [13, 42, 100]:
-    for k in [1, 5, 10, 20, 30]:
+    for k in [5, 10, 20, 30]:
         train_dict = data_processor.get_train_examples()  # train data
         # train_dict = dict(random.sample(train_dict.items(), 200))
         test_dict = data_processor.get_test_examples()
         # test_dict = dict(random.sample(test_dict.items(), 100))
 
         demo_mappings = {}
-        ## Create training prompts and demonstration retrieval models
-        train_dict, knn_model = get_demonstrations(args, train_dict)
 
         for test_idx, input in tqdm(test_dict.items()):
-            demo_list = find_knn_example(knn_model, input, train_dict, k)
+            demo_list = get_demonstrations(train_dict, k)
             demo_mappings[input.id] = demo_list
 
         with open(f'{outpath}/k-{k}.jsonl', 'a') as f:
@@ -74,7 +52,7 @@ def get_demonstration_mappings(args):
                 f.write('\n')
             json.dump(demo_mappings, f)
 
-        del test_dict, knn_model, train_dict
+        del test_dict, train_dict
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='MentalLlama')
