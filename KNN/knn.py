@@ -9,7 +9,6 @@ def get_demonstrations(args, example_dict):
     :param reltoid:
     :return:
     '''
-    train_dict, knn_model = None, None
     train_list = [x for y in example_dict.values() for x in y]
     if args.no_na:
         train_list = [x for x in train_list if x["relations"] != 'NONE']
