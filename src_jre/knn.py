@@ -50,7 +50,7 @@ def find_knn_example(model, test_dict, train_dict, k):
 
 def get_demonstration_mappings(args):
     set_seed(args)
-    outpath = f'{args.data_dir}/{args.task}/knn'
+    outpath = f'{args.data_dir}/{args.task}/knnDemo'
     os.makedirs(outpath, exist_ok=True)
 
     data_processor = DataProcessor(args)
@@ -69,7 +69,7 @@ def get_demonstration_mappings(args):
             demo_list = find_knn_example(knn_model, input, train_dict, k)
             demo_mappings[input.id] = demo_list
 
-        with open(f'{outpath}/k-{k}.jsonl', 'a') as f:
+        with open(f'{outpath}/k-{k}.jsonl', 'w+') as f:
             if f.tell() > 0:  # Check if file is not empty
                 f.write('\n')
             json.dump(demo_mappings, f)
