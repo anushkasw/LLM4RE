@@ -7,7 +7,6 @@ import json
 import torch
 
 from tqdm import tqdm
-from simcse import SimCSE
 
 import gc
 gc.collect()
@@ -30,7 +29,7 @@ def get_demonstrations(train_dict, k):
 
 def get_demonstration_mappings(args):
     set_seed(args)
-    outpath = f'{args.data_dir}/{args.task}/random'
+    outpath = f'{args.data_dir}/{args.task}/randomDemo'
     os.makedirs(outpath, exist_ok=True)
 
     data_processor = DataProcessor(args)
