@@ -1,3 +1,5 @@
+import os.path
+
 from tqdm import tqdm
 import argparse
 import math
@@ -22,11 +24,17 @@ def main(args):
     )
 
     data_processor = DataProcessor(args)
+    print(f'\tLoading training data')
     train_dict = data_processor.get_train_examples()  # train data
+    print(f'\tLoading test data')
     test_dict = data_processor.get_test_examples()
 
-    with open(f'{args.data_dir}/{args.task}/{args.demo}/k-{args.k}.jsonl', 'r') as f:
-        demo_mapping = json.load(f)
+    print(f'\tLoading Demo Mapping')
+    if os.path.exists(f'{args.data_dir}/{args.task}/{args.demo}/k-{args.k}.jsonl'):
+        with open(f'{args.data_dir}/{args.task}/{args.demo}/k-{args.k}.jsonl', 'r') as f:
+            demo_mapping = json.load(f)
+    else:
+        raise FileNotFoundError(f'Cannot find {args.data_dir}/{args.task}/{args.demo}/k-{args.k}.jsonl')
 
     test_res = []
     for test_idx, input in tqdm(test_dict.items()):
@@ -69,4 +77,9 @@ if __name__ == "__main__":
     parser.add_argument('--cache_dir', type=str, default="/blue/woodard/share/Relation-Extraction/LLM_for_RE/cache", help="LLM cache directory")
     args = parser.parse_args()
 
-    main(args)
+    try:
+        main(args)
+    except FileNotFoundError as e:
+        print(e)
+
+    print('\tDone.')

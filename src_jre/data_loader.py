@@ -1,5 +1,6 @@
 import json
 import re
+from tqdm import tqdm
 
 def flatten_list(labels):
     flattened = []
@@ -95,7 +96,7 @@ class DataProcessor:
     def get_examples(self, example_path):
         example_dict = {}
         with open(example_path, "r") as f:
-            for line in f.read().splitlines():
+            for line in tqdm(f.read().splitlines()):
                 tmp_dict = json.loads(line)
                 example_dict[tmp_dict['sample_id']] = instance(tmp_dict, self.rel2prompt)
         return example_dict
