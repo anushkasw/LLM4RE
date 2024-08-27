@@ -1,19 +1,6 @@
 import random
 
-def random_demo_ret(args, prompt, demo_dict, rel2prompt):
-    pass
-    # for rel in demo_dict.keys():
-    #     random.shuffle(demo_dict[rel])
-    #     kshot = demo_dict[rel]
-    #     for data in kshot:
-    #
-    #         if "schema" in args.prompt:
-    #             prompt += "Context: " + sentence + " The relation between " + headtype + " '" + head + "' and " + tailtype + " '" + tail + "' in the context is " + relation + ".\n"
-    #         else:
-    #             prompt += "Context: " + sentence + " The relation between '" + head + "' and '" + tail + "' in the context is " + relation + ".\n"
-    # return prompt
-
-def knn_demo_ret(prompt, demo_list, entity_info):
+def get_demo(prompt, demo_list, entity_info):
     for demo in demo_list:
         sentence = demo.sentence
 
@@ -55,10 +42,7 @@ def create_prompt(args, input, demo_list, data_processor):
     #           "Given a sentence, please extract the subject and object in the sentence based on these three lists, "
     #           f"and form a triplet in the form of {triple_format}.")
 
-    if args.demo == 'knn':
-        prompt = knn_demo_ret(prompt, demo_list, args.entity_info)
-    elif args.demo_ret == 'random':
-        prompt = random_demo_ret(prompt, prompt, demo_list, data_processor.rel2prompt)
+    prompt = get_demo(prompt, demo_list, args.entity_info)
 
     testsen = input.sentence
     # prompt += f"## Input:\nContext: {testsen}\nOutput:"
