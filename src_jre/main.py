@@ -31,10 +31,10 @@ def main(args):
 
     print(f'\tLoading Demo Mapping')
     if os.path.exists(f'{args.data_dir}/{args.task}/{args.demo}Demo/k-{args.k}.jsonl'):
-        with open(f'{args.data_dir}/{args.task}/{args.demo}/k-{args.k}.jsonl', 'r') as f:
+        with open(f'{args.data_dir}/{args.task}/{args.demo}Demo/k-{args.k}.jsonl', 'r') as f:
             demo_mapping = json.load(f)
     else:
-        raise FileNotFoundError(f'Cannot find {args.data_dir}/{args.task}/{args.demo}/k-{args.k}.jsonl')
+        raise FileNotFoundError(f'Cannot find {args.data_dir}/{args.task}/{args.demo}Demo/k-{args.k}.jsonl')
 
     test_res = []
     for test_idx, input in tqdm(test_dict.items()):
