@@ -9,6 +9,7 @@ from prompt import create_prompt
 
 def main(args):
     demo = Demo_HF(
+        cache_dir=args.cache_dir,
         access_token=args.api_key,
         model_name=args.model,
         temperature=0,
@@ -20,18 +21,19 @@ def main(args):
     )
 
     data_processor = DataProcessor(args)
-    demo_dict = data_processor.get_train_examples()  # train data
+    train_dict = data_processor.get_train_examples()  # train data
     test_dict = data_processor.get_test_examples()
 
-    test_examples = [item for sublist in test_dict.values() for item in sublist]
+    with open(f'{args.data_dir}/{args.task}/{args.demo}/{args.data_seed}-{args.k}.jsonl', 'r') as f:
+        demo_mapping = json.load(f)
 
     test_res = []
-    for input in tqdm(test_examples):
-        prompt = create_prompt(args, input, demo_dict, data_processor)
+    for test_idx, input in tqdm(test_dict.items()):
+        demo_list = [train_dict[i] for i in demo_mapping[test_idx]]
+        prompt = create_prompt(args, input, demo_list, data_processor)
 
         try:
             result, logprobs = demo.get_multiple_sample(prompt)
-
             test_res.append({
                 "id": input['id'],
                 "label_true": input['relation'],
@@ -60,8 +62,11 @@ if __name__ == "__main__":
     parser.add_argument('--model', '-m', type=str, default='meta-llama/Meta-Llama-3.1-8B-Instruct', required=True, help="LLM")
     parser.add_argument('--prompt', type=str, required=False, default="instruct_schema",
                         choices=["text", "text_schema", "instruct", "instruct_schema"])
+    parser.add_argument('--exp', type=str, required=True, default="rc",
+                        choices=["rc", "jre"])
     parser.add_argument('--k', type=int, default=5, help="k-shot demonstrations")
     parser.add_argument('--data_seed', type=int, default=13, help="k-shot demonstrations")
+    parser.add_argument('--cache_dir', type=str, default="/blue/woodard/share/Relation-Extraction/LLM_for_RE/cache", help="LLM cache directory")
     args = parser.parse_args()
 
     main(args)

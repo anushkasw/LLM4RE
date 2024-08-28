@@ -1,5 +1,6 @@
 import json
 import re
+from tqdm import tqdm
 
 def flatten_list(labels):
     flattened = []
@@ -12,39 +13,47 @@ def flatten_list(labels):
 
 class instance:
     def __init__(self, tmp_dict, rel2prompt):
-        self.id = tmp_dict["id"]
-        self.sentence = " ".join(tmp_dict["token"])
+        self.id = tmp_dict["sample_id"]
+        self.sentence = tmp_dict['sentText']
 
-        if tmp_dict["relation"] in ['no_relation', 'Other']:
-            self.relation = "NONE"
-        else:
-            self.relation = tmp_dict["relation"]
-        self.prompt_label = rel2prompt[self.relation]
+        self.triples = []
+        for mentions in tmp_dict['relationMentions']:
+            if mentions["label"] in ['no_relation', 'Other']:
+                relation = "none"
+            else:
+                relation = mentions["label"]
+            prompt_label = rel2prompt[relation]
 
-        ss, se = tmp_dict['subj_start'], tmp_dict['subj_end']
-        self.head = ' '.join(tmp_dict['token'][ss:se + 1])
-        self.head_type = tmp_dict['subj_type'].lower().replace('_', ' ')
-        if self.head_type == "misc":
-            self.headtype = "miscellaneous"
-        elif self.head_type == 'O':
-            self.headtype = "unkown"
+            if mentions['em1Type'] == "misc":
+                headtype = "miscellaneous"
+            elif mentions['em1Type'] == 'O':
+                headtype = "unkown"
+            else: headtype = mentions['em1Type']
 
-        os, oe = tmp_dict['obj_start'], tmp_dict['obj_end']
-        self.tail = ' '.join(tmp_dict['token'][os:oe + 1])
-        self.tail_type = tmp_dict['obj_type'].lower().replace('_', ' ')
-        if self.tail_type == "misc":
-            self.tail_type = "miscellaneous"
-        elif self.tail_type == 'O':
-            self.tail_type = "unkown"
+            if mentions['em2Type'] == "misc":
+                tailtype = "miscellaneous"
+            elif mentions['em2Type'] == 'O':
+                tailtype = "unkown"
+            else: tailtype = mentions['em2Type']
 
-        self.reference = ("The relation between \"" + self.head + "\" and \""
-                          + self.tail + "\" in the sentence \"" + self.sentence + "\"")
-        self.context = "\nContext: " + self.sentence
-        self.query = ("\nQuestion: What is the relation between " + self.head
-                      + " and " + self.tail + "?")
-        self.clue = "\nClues: "
-        self.pred = "\nAnswer: "
-        self.prompt = self.context + self.query
+            self.triples.append({
+                'head': mentions['em1Text'],
+                'tail': mentions['em2Text'],
+                'head_type': headtype,
+                'tail_type': tailtype,
+                'relation': relation,
+                'prompt_relation': prompt_label
+            }
+            )
+
+        # self.reference = ("The relation between \"" + self.head + "\" and \""
+        #                   + self.tail + "\" in the sentence \"" + self.sentence + "\"")
+        # self.context = "\nContext: " + self.sentence
+        # self.query = ("\nQuestion: What is the relation between " + self.head
+        #               + " and " + self.tail + "?")
+        # self.clue = "\nClues: "
+        # self.pred = "\nAnswer: "
+        # self.prompt = self.context + self.query
 
     # def get_relation(self, tmp_dict):
     #     if tmp_dict["relations"] == [[]]:
@@ -65,21 +74,17 @@ class DataProcessor:
 
         # Mapping 'no_relation' and 'Other' labels to 'NONE'
         if args.task in ["semeval_nodir", "GIDS"]:
-            self.rel2id['NONE'] = self.rel2id.pop('Other')
+            self.rel2id['none'] = self.rel2id.pop('Other')
             args.na_idx = self.rel2id['NONE']
         elif args.task in ["tacred", "tacrev", "retacred", "dummy_tacred", "kbp37_nodir"]:
-            self.rel2id['NONE'] = self.rel2id.pop('no_relation')
-            args.na_idx = self.rel2id['NONE']
+            self.rel2id['none'] = self.rel2id.pop('no_relation')
+            args.na_idx = self.rel2id['none']
 
         self.rel2prompt = self.get_rel2prompt(args)
 
         # Demonstration Retrieval
-        if args.demo == 'random':
-            # This sets the training data path to the pre-defined k-shot splits present in the Data directory
-            self.train_path = f'{args.data_dir}/{args.task}/k-shot/seed-{args.data_seed}/{args.k}-shot/train.json'
-        elif args.demo == 'knn':
-            self.train_path = f'{args.data_dir}/{args.task}/train.json'
-        self.test_path = f'{args.data_dir}/{args.task}/k-shot/seed-{args.data_seed}/test.json' # TODO: reorg test data
+        self.train_path = f'{args.data_dir}/{args.task}/train.jsonl'
+        self.test_path = f'{args.data_dir}/{args.task}/test.jsonl'
 
     def get_train_examples(self):
         return self.get_examples(self.train_path)
@@ -90,10 +95,9 @@ class DataProcessor:
     def get_examples(self, example_path):
         example_dict = {}
         with open(example_path, "r") as f:
-            for line in f.read().splitlines():
+            for line in tqdm(f.read().splitlines()):
                 tmp_dict = json.loads(line)
-                for dict_ in tmp_dict:
-                    example_dict[dict_['id']] = instance(dict_, self.rel2prompt)
+                example_dict[tmp_dict['sample_id']] = instance(tmp_dict, self.rel2prompt)
         return example_dict
 
     def get_rel2prompt(self, args):
@@ -159,7 +163,7 @@ class DataProcessor:
             labels = [item.lower() for item in labels]
 
             if args.task == 'semeval_nodir':
-                rel2prompt[name] = ' and '.join(labels).upper()
+                rel2prompt[name] = ' and '.join(labels).lower()
             else:
-                rel2prompt[name] = ' '.join(labels).upper()
+                rel2prompt[name] = ' '.join(labels).lower()
         return rel2prompt
