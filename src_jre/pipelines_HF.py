@@ -5,7 +5,7 @@ import transformers
 import torch
 # import logging
 
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, AutoModel
 from huggingface_hub import login
 from pathlib import Path
 from datetime import timedelta
@@ -17,7 +17,7 @@ transformers.logging.set_verbosity_info()
 class HFModelPipelines:
     '''
     This pipeline should be able to access all available HF models in transformers.
-    model_id: The official name of the model (please check HF). 
+    model_id: The official name of the model (please check HF).
     '''
     def __init__(self, access_token, cache_dir=None):
         self.cache_dir = cache_dir
@@ -35,7 +35,8 @@ class HFModelPipelines:
         print(f'Loading {model_id}')
         tokenizer = AutoTokenizer.from_pretrained(model_id, cache_dir=self.cache_dir)
         print('Loading model')
-        model = AutoModelForCausalLM.from_pretrained(model_id, torch_dtype="auto", device_map="auto", trust_remote_code=True, cache_dir=self.cache_dir, low_cpu_mem_usage=True)
+        model = AutoModelForCausalLM.from_pretrained(model_id, trust_remote_code=True, cache_dir=self.cache_dir)
+        # model = AutoModel.from_pretrained(model_id, token=self.access_token)
 
         # # Parallel processing - CUDA
         # if torch.cuda.device_count() > 1:
@@ -48,6 +49,7 @@ class HFModelPipelines:
             model=model,
             tokenizer=tokenizer,
             device_map="auto",
+            torch_dtype=torch.bfloat16,
         )
 
     def get_pipeline(self, model_name):
