@@ -43,23 +43,22 @@ def main(args):
 
         try:
             result, logprobs = demo.get_multiple_sample(prompt)
-            test_res.append({
+            test_res = {
                 "id": input['id'],
                 "label_true": input['relation'],
                 "label_pred": result[0],
                 "probs": math.exp(logprobs[0][0].max().item()) if logprobs else None
-            })
+            }
 
         except Exception as e:
             print(e)
             if hasattr(e, '_message') and e._message == 'You exceeded your current quota, please check your plan and billing details.':
                 continue
 
-    with open(f'{args.out_path}/test.jsonl', 'w') as f:
-        for res in test_res:
-            if f.tell() > 0:  # Check if file is not empty
-                f.write('\n')
-            json.dump(res, f)
+        with open(f'{args.out_path}/test.jsonl', 'a+') as f:
+                if f.tell() > 0:  # Check if file is not empty
+                    f.write('\n')
+                json.dump(test_res, f)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
