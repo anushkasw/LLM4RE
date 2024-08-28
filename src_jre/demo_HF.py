@@ -6,7 +6,6 @@ class Demo_HF:
     def __init__(self, access_token, model_name, temperature, max_tokens, top_p, frequency_penalty, presence_penalty, logprobs, cache_dir):
         self.pipeline = HFModelPipelines(access_token, cache_dir=cache_dir).get_pipeline(model_name)
         self.tokenizer = self.pipeline.tokenizer
-        self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})
         self.model = self.pipeline.model
         self.temperature = temperature
         self.max_tokens = max_tokens
@@ -14,10 +13,16 @@ class Demo_HF:
         self.frequency_penalty = frequency_penalty
         self.presence_penalty = presence_penalty
         self.logprobs = logprobs
+        self.tokenizer.pad_token = self.tokenizer.eos_token
+
+        # # Add a special pad token if the tokenizer doesn't have one
+        # if self.tokenizer.pad_token is None:
+            # self.tokenizer.add_special_tokens({'pad_token': '[PAD]'})  # Adding a new special [PAD] token
+        #     self.model.resize_token_embeddings(len(self.tokenizer))  # Resizing the model embeddings to accommodate the new token
 
     def get_multiple_sample(self, prompt):
         # Tokenize the input prompt
-        inputs = self.tokenizer(prompt, return_tensors="pt", padding=True, truncation=True).to(self.pipeline.device)
+        inputs = self.tokenizer(prompt, return_tensors="pt", padding=True, truncation=False).to(self.pipeline.device)
 
         # Ensure attention mask is set
         attention_mask = inputs['attention_mask']
