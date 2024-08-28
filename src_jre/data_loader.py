@@ -19,7 +19,7 @@ class instance:
         self.triples = []
         for mentions in tmp_dict['relationMentions']:
             if mentions["label"] in ['no_relation', 'Other']:
-                relation = "NONE"
+                relation = "none"
             else:
                 relation = mentions["label"]
             prompt_label = rel2prompt[relation]
@@ -74,18 +74,17 @@ class DataProcessor:
 
         # Mapping 'no_relation' and 'Other' labels to 'NONE'
         if args.task in ["semeval_nodir", "GIDS"]:
-            self.rel2id['NONE'] = self.rel2id.pop('Other')
+            self.rel2id['none'] = self.rel2id.pop('Other')
             args.na_idx = self.rel2id['NONE']
         elif args.task in ["tacred", "tacrev", "retacred", "dummy_tacred", "kbp37_nodir"]:
-            self.rel2id['NONE'] = self.rel2id.pop('no_relation')
-            args.na_idx = self.rel2id['NONE']
+            self.rel2id['none'] = self.rel2id.pop('no_relation')
+            args.na_idx = self.rel2id['none']
 
         self.rel2prompt = self.get_rel2prompt(args)
 
         # Demonstration Retrieval
         self.train_path = f'{args.data_dir}/{args.task}/train.jsonl'
         self.test_path = f'{args.data_dir}/{args.task}/test.jsonl'
-        # self.test_path = f'{args.data_dir}/{args.task}/k-shot/seed-{args.data_seed}/test.jsonl' # TODO: reorg test data
 
     def get_train_examples(self):
         return self.get_examples(self.train_path)
@@ -164,7 +163,7 @@ class DataProcessor:
             labels = [item.lower() for item in labels]
 
             if args.task == 'semeval_nodir':
-                rel2prompt[name] = ' and '.join(labels).upper()
+                rel2prompt[name] = ' and '.join(labels).lower()
             else:
-                rel2prompt[name] = ' '.join(labels).upper()
+                rel2prompt[name] = ' '.join(labels).lower()
         return rel2prompt
