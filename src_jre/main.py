@@ -1,6 +1,8 @@
 from tqdm import tqdm
 import argparse
 import math
+import random
+import numpy as np
 import json
 import os
 
@@ -13,14 +15,25 @@ torch.cuda.empty_cache()
 from demo_HF import Demo_HF
 from data_loader import DataProcessor
 from prompt import create_prompt
+from no_pipe import model_init, model_inference
 
+def set_seed(seed):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
 def main(args):
-    demo = Demo_HF(
-        access_token=args.api_key,
-        model_name=args.model,
-        max_tokens=128,
-        cache_dir=args.cache_dir,
-    )
+    if args.pipe:
+        demo = Demo_HF(
+            access_token=args.api_key,
+            model_name=args.model,
+            max_tokens=128,
+            cache_dir=args.cache_dir,
+        )
+    else:
+        tokenizer, model = model_init(args.model, args.cache_dir)
+
     print(f'\tNumber of GPUs available: {torch.cuda.device_count()}')
     os.makedirs(args.out_path, exist_ok=True)
 
@@ -43,7 +56,10 @@ def main(args):
         prompt = create_prompt(args, input, demo_list, data_processor)
 
         try:
-            result = demo.get_multiple_sample(prompt)
+            if args.pipe:
+                result = demo.get_multiple_sample(prompt)
+            else:
+                result = model_inference(tokenizer, model, prompt, device='cuda')
         except Exception as e:
             raise e
 
@@ -77,8 +93,10 @@ if __name__ == "__main__":
     parser.add_argument('--data_dir', '-dir', type=str, required=True, default="/blue/woodard/share/Relation-Extraction/Data")
     parser.add_argument('--out_path', '-out', type=str, default='./', required=True, help="Output Directory")
     parser.add_argument('--task', '-t', type=str, required=True, help="Dataset Name.")
+    parser.add_argument('--seed', type=int, required=False, default=42)
     parser.add_argument('--demo', '-d', type=str, default='random', required=False, help="Demonstration Retrieval Strategy")
     parser.add_argument('--model', '-m', type=str, default='meta-llama/Meta-Llama-3.1-8B-Instruct', required=True, help="LLM")
+    parser.add_argument("--pipe", action='store_true', help="if use huggingface pipeline")
 
     parser.add_argument("--entity_info", action='store_true', help="entity type information to be added to the prompt")
     parser.add_argument("--rel_info", action='store_true', help="relation type information to be added to the prompt")
