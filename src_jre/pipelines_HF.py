@@ -3,9 +3,8 @@ import os
 import time
 import transformers
 import torch
-# import logging
 
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, AutoModel
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 from huggingface_hub import login
 from pathlib import Path
 from datetime import timedelta
@@ -34,15 +33,10 @@ class HFModelPipelines:
     def create_pipeline(self, model_id):
         print(f'Loading {model_id}')
         tokenizer = AutoTokenizer.from_pretrained(model_id, cache_dir=self.cache_dir)
+        tokenizer.pad_token = tokenizer.eos_token
         print('Loading model')
         model = AutoModelForCausalLM.from_pretrained(model_id, trust_remote_code=True, cache_dir=self.cache_dir)
-        # model = AutoModel.from_pretrained(model_id, token=self.access_token)
-
-        # # Parallel processing - CUDA
-        # if torch.cuda.device_count() > 1:
-        #     print(f"Using {torch.cuda.device_count()} GPUs")
-        #     model = torch.nn.DataParallel(model)
-        # model.to(self.device)
+        model.generation_config.pad_token_id = tokenizer.eos_token_id
 
         return pipeline(
             "text-generation",
@@ -50,6 +44,7 @@ class HFModelPipelines:
             tokenizer=tokenizer,
             device_map="auto",
             torch_dtype=torch.bfloat16,
+            return_full_text=False,
         )
 
     def get_pipeline(self, model_name):
