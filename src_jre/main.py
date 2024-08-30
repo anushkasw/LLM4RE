@@ -1,10 +1,14 @@
-import os.path
-
 from tqdm import tqdm
 import argparse
 import math
 import json
-import random
+import os
+
+import torch
+import gc
+
+gc.collect()
+torch.cuda.empty_cache()
 
 from demo_HF import Demo_HF
 from data_loader import DataProcessor
@@ -12,16 +16,13 @@ from prompt import create_prompt
 
 def main(args):
     demo = Demo_HF(
-        cache_dir=args.cache_dir,
         access_token=args.api_key,
         model_name=args.model,
-        temperature=0,
-        max_tokens=256,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0,
-        logprobs=True,
+        max_tokens=128,
+        cache_dir=args.cache_dir,
     )
+    print(f'\tNumber of GPUs available: {torch.cuda.device_count()}')
+    os.makedirs(args.out_path, exist_ok=True)
 
     data_processor = DataProcessor(args)
     print(f'\tLoading training data')
@@ -42,23 +43,33 @@ def main(args):
         prompt = create_prompt(args, input, demo_list, data_processor)
 
         try:
-            result, logprobs = demo.get_multiple_sample(prompt)
-            test_res = {
-                "id": input['id'],
-                "label_true": input['relation'],
-                "label_pred": result[0],
-                "probs": math.exp(logprobs[0][0].max().item()) if logprobs else None
-            }
-
+            result = demo.get_multiple_sample(prompt)
         except Exception as e:
-            print(e)
-            if hasattr(e, '_message') and e._message == 'You exceeded your current quota, please check your plan and billing details.':
-                continue
+            raise e
+
+        triple_str = "["
+        for triple in input.triples:
+            subj = triple['head']
+            obj = triple['tail']
+            subj_type = triple['head_type']
+            obj_type = triple['tail_type']
+            relation = triple['prompt_relation']
+            if args.entity_info:
+                triple_str += f'({subj}:{subj_type},{relation},{obj}:{obj_type})'
+            else:
+                triple_str += f'({subj}:{subj_type},{relation},{obj}:{obj_type})'
+        triple_str += "]"
+
+        test_res = {
+            "id": input.id,
+            "label_true": triple_str,
+            "label_pred": result,
+        }
 
         with open(f'{args.out_path}/test.jsonl', 'a+') as f:
-                if f.tell() > 0:  # Check if file is not empty
-                    f.write('\n')
-                json.dump(test_res, f)
+            if f.tell() > 0:  # Check if file is not empty
+                f.write('\n')
+            json.dump(test_res, f)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -80,5 +91,7 @@ if __name__ == "__main__":
         main(args)
     except FileNotFoundError as e:
         print(e)
+    except Exception as e:
+        print(f'\n[Error] {e}')
 
     print('\tDone.')
