@@ -82,7 +82,7 @@ if __name__ == "__main__":
     parser.add_argument('--seed', type=int, required=False, default=42)
 
     parser.add_argument('--task', '-t', type=str, required=True, help="Dataset Name.")
-    parser.add_argument('--k', type=int, required=True, help="k-shot demonstrations")
+    parser.add_argument('--k', type=str, required=True, help="k-shot demonstrations")
     parser.add_argument('--prompt', type=str, default='open', choices=['open', 'entrel'], help="Prompt Type")
     parser.add_argument('--demo', '-d', type=str, default='random', required=False, help="Demonstration Retrieval Strategy")
     parser.add_argument('--model', '-m', type=str, default='meta-llama/Meta-Llama-3.1-8B-Instruct', required=True, help="LLM")
