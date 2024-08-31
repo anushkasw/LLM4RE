@@ -58,7 +58,6 @@ def main(args):
         demo_list = [train_dict[i] for i in demo_mapping[test_idx]]
         prompt = create_prompt(args, input, demo_list, data_processor)
 
-        start = time.time()
         try:
             if args.pipe:
                 result = demo.get_multiple_sample(prompt)
@@ -66,7 +65,6 @@ def main(args):
                 result = model_inference(tokenizer, model, prompt, device='cuda')
         except Exception as e:
             print(f'\n[Error] {e}')
-        print(f'time for one sample: {time.time() - start}')
 
         test_res = {
             "id": input.id,
