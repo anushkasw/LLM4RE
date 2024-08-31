@@ -25,15 +25,15 @@ def set_seed(seed):
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
 def main(args):
-    # if args.pipe:
-    #     demo = Demo_HF(
-    #         access_token=args.api_key,
-    #         model_name=args.model,
-    #         max_tokens=128,
-    #         cache_dir=args.cache_dir,
-    #     )
-    # else:
-    #     tokenizer, model = model_init(args.model, args.cache_dir)
+    if args.pipe:
+        demo = Demo_HF(
+            access_token=args.api_key,
+            model_name=args.model,
+            max_tokens=128,
+            cache_dir=args.cache_dir,
+        )
+    else:
+        tokenizer, model = model_init(args.model, args.cache_dir)
 
     print(f'\tNumber of GPUs available: {torch.cuda.device_count()}')
 
@@ -46,7 +46,7 @@ def main(args):
     print(f'\tLoading test data')
     test_dict = data_processor.get_test_examples()
 
-    print(f'\tLoading Demo Mapping')
+    print(f'\tLoading Demo Mapping from: {args.data_dir}/{args.task}/{args.demo}Demo/k-{args.k}.jsonl')
     if os.path.exists(f'{args.data_dir}/{args.task}/{args.demo}Demo/k-{args.k}.jsonl'):
         with open(f'{args.data_dir}/{args.task}/{args.demo}Demo/k-{args.k}.jsonl', 'r') as f:
             demo_mapping = json.load(f)
