@@ -4,6 +4,7 @@ import math
 import random
 import numpy as np
 import json
+import time
 import os
 
 import torch
@@ -35,7 +36,9 @@ def main(args):
         tokenizer, model = model_init(args.model, args.cache_dir)
 
     print(f'\tNumber of GPUs available: {torch.cuda.device_count()}')
-    os.makedirs(args.out_path, exist_ok=True)
+
+    outpath = f'{args.out_path}/JRE/{args.model}/{args.task}/{args.demo}'
+    os.makedirs(outpath, exist_ok=True)
 
     data_processor = DataProcessor(args)
     print(f'\tLoading training data')
@@ -55,34 +58,22 @@ def main(args):
         demo_list = [train_dict[i] for i in demo_mapping[test_idx]]
         prompt = create_prompt(args, input, demo_list, data_processor)
 
+        start = time.time()
         try:
             if args.pipe:
                 result = demo.get_multiple_sample(prompt)
             else:
                 result = model_inference(tokenizer, model, prompt, device='cuda')
         except Exception as e:
-            raise e
-
-        triple_str = "["
-        for triple in input.triples:
-            subj = triple['head']
-            obj = triple['tail']
-            subj_type = triple['head_type']
-            obj_type = triple['tail_type']
-            relation = triple['prompt_relation']
-            if args.entity_info:
-                triple_str += f'({subj}:{subj_type},{relation},{obj}:{obj_type})'
-            else:
-                triple_str += f'({subj}:{subj_type},{relation},{obj}:{obj_type})'
-        triple_str += "]"
+            print(f'\n[Error] {e}')
+        print(f'time for one sample: {time.time() - start}')
 
         test_res = {
             "id": input.id,
-            "label_true": triple_str,
             "label_pred": result,
         }
 
-        with open(f'{args.out_path}/test.jsonl', 'a+') as f:
+        with open(f'{outpath}/{args.prompt}-{args.k}.jsonl', 'a') as f:
             if f.tell() > 0:  # Check if file is not empty
                 f.write('\n')
             json.dump(test_res, f)
@@ -90,26 +81,25 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--api_key', '-key', type=str, required=True, help="Hugging Face API access token")
-    parser.add_argument('--data_dir', '-dir', type=str, required=True, default="/blue/woodard/share/Relation-Extraction/Data")
-    parser.add_argument('--out_path', '-out', type=str, default='./', required=True, help="Output Directory")
-    parser.add_argument('--task', '-t', type=str, required=True, help="Dataset Name.")
     parser.add_argument('--seed', type=int, required=False, default=42)
+
+    parser.add_argument('--task', '-t', type=str, required=True, help="Dataset Name.")
+    parser.add_argument('--k', type=int, default=1, help="k-shot demonstrations")
+    parser.add_argument('--prompt', type=str, default='open', choices=['open', 'entrel'], help="Prompt Type")
     parser.add_argument('--demo', '-d', type=str, default='random', required=False, help="Demonstration Retrieval Strategy")
     parser.add_argument('--model', '-m', type=str, default='meta-llama/Meta-Llama-3.1-8B-Instruct', required=True, help="LLM")
     parser.add_argument("--pipe", action='store_true', help="if use huggingface pipeline")
+    parser.add_argument("--reason", action='store_true', help="Add reasoning to examples")
 
-    parser.add_argument("--entity_info", action='store_true', help="entity type information to be added to the prompt")
-    parser.add_argument("--rel_info", action='store_true', help="relation type information to be added to the prompt")
-    parser.add_argument('--k', type=int, default=1, help="k-shot demonstrations")
+    parser.add_argument('--data_dir', '-dir', type=str, required=True,
+                        default="/blue/woodard/share/Relation-Extraction/Data")
+    parser.add_argument('--prompt_dir', type=str, required=False,
+                        default="/home/UFAD/aswarup/research/Relation-Extraction/LLM4RE/prompts")
+    parser.add_argument('--out_path', '-out', type=str, default='./', required=True, help="Output Directory")
     parser.add_argument('--data_seed', type=int, default=13, help="k-shot demonstrations")
     parser.add_argument('--cache_dir', type=str, default="/blue/woodard/share/Relation-Extraction/LLM_for_RE/cache", help="LLM cache directory")
     args = parser.parse_args()
 
-    try:
-        main(args)
-    except FileNotFoundError as e:
-        print(e)
-    except Exception as e:
-        print(f'\n[Error] {e}')
+    main(args)
 
     print('\tDone.')
