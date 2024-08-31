@@ -24,4 +24,5 @@ def model_inference(tokenizer, model, prompt, device='cuda'):
     # generated_ids = outputs.sequences
     # scores = outputs.scores
     decoded = tokenizer.batch_decode(outputs)
-    return decoded[0].split('[/INST]')[-1]
+    # decoded[0].split('[/INST]')[-1]
+    return decoded[0]
