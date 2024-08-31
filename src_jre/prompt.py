@@ -9,6 +9,7 @@ def clean(text):
     return text
 
 def get_demo(demo_list, reason=None):
+    demo_prompt = ''
     for demo in demo_list:
         sentence = demo.sentence
 
@@ -19,10 +20,10 @@ def get_demo(demo_list, reason=None):
             relation = triple['prompt_relation'].upper()
             triple_str += f'[{subj}, {relation}, {obj}]'
         triple_str += "]"
-        demo_prompt = f"Context: {sentence}\nGiven the context, the entity and relation triplets are: {triple_str}"
+        demo_prompt += f"Context: {sentence}\nGiven the context, the entity and relation triplets are: {triple_str}\n"
 
         if reason:
-            demo_prompt += f"\nReason:\n"
+            demo_prompt += f"Reason:\n"
             for triple in demo.triples:
                 demo_prompt += f"{clean(reason[triple['id']])}\n"
     return demo_prompt
