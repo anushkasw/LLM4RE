@@ -6,6 +6,7 @@ import numpy as np
 import json
 import time
 import os
+import traceback
 
 import torch
 import gc
@@ -64,7 +65,7 @@ def main(args):
             else:
                 result = model_inference(tokenizer, model, prompt, device='cuda')
         except Exception as e:
-            print(f'\n[Error] {e}')
+            raise e
 
         test_res = {
             "id": input.id,
@@ -98,6 +99,10 @@ if __name__ == "__main__":
     parser.add_argument('--cache_dir', type=str, default="/blue/woodard/share/Relation-Extraction/LLM_for_RE/cache", help="LLM cache directory")
     args = parser.parse_args()
 
-    main(args)
+    try:
+        main(args)
+    except Exception as e:
+        print(f'[Error] {e}')
+        print(traceback.format_exc())
 
     print('\tDone.')
