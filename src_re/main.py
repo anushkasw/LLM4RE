@@ -25,15 +25,15 @@ def set_seed(seed):
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
 def main(args):
-    # if args.pipe:
-    #     demo = Demo_HF(
-    #         access_token=args.api_key,
-    #         model_name=args.model,
-    #         max_tokens=128,
-    #         cache_dir=args.cache_dir,
-    #     )
-    # else:
-    #     tokenizer, model = model_init(args.model, args.cache_dir)
+    if args.pipe:
+        demo = Demo_HF(
+            access_token=args.api_key,
+            model_name=args.model,
+            max_tokens=128,
+            cache_dir=args.cache_dir,
+        )
+    else:
+        tokenizer, model = model_init(args.model, args.cache_dir)
 
     print(f'\tNumber of GPUs available: {torch.cuda.device_count()}')
 
@@ -83,7 +83,7 @@ if __name__ == "__main__":
 
     parser.add_argument('--task', '-t', type=str, required=True, help="Dataset Name.")
     parser.add_argument('--k', type=str, required=True, help="k-shot demonstrations")
-    parser.add_argument('--prompt', type=str, default='open', choices=['open', 'entrel'], help="Prompt Type")
+    parser.add_argument('--prompt', type=str, default='open', choices=['open', 'entrel', 'rel', 'ent'], help="Prompt Type")
     parser.add_argument('--demo', '-d', type=str, default='random', required=False, help="Demonstration Retrieval Strategy")
     parser.add_argument('--model', '-m', type=str, default='meta-llama/Meta-Llama-3.1-8B-Instruct', required=True, help="LLM")
     parser.add_argument("--pipe", action='store_true', help="if use huggingface pipeline")
