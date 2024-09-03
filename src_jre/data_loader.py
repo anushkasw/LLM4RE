@@ -56,11 +56,11 @@ class DataProcessor:
 
         # Mapping 'no_relation' and 'Other' labels to 'NONE'
         if args.task in ["semeval_nodir", "GIDS"]:
-            self.rel2id['none'] = self.rel2id.pop('Other')
+            self.rel2id['NONE'] = self.rel2id.pop('Other')
             args.na_idx = self.rel2id['NONE']
         elif args.task in ["tacred", "tacrev", "retacred", "dummy_tacred", "kbp37_nodir"]:
-            self.rel2id['none'] = self.rel2id.pop('no_relation')
-            args.na_idx = self.rel2id['none']
+            self.rel2id['NONE'] = self.rel2id.pop('no_relation')
+            args.na_idx = self.rel2id['NONE']
 
         self.rel2prompt = self.get_rel2prompt(args)
 
