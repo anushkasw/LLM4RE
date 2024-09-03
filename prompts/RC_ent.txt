@@ -3,4 +3,4 @@ You are a knowledgeable person. You will solve the relation extraction task. Giv
 $EXAMPLES$
 
 Context: $TEXT$
-Given the context, the relation between $SUBJECT$ of type $SUBJ_TYPE$ and $OBJECT$ of type $SUBJ_TYPE$ is:
+Given the context, the relation between $SUBJECT$ of type $SUBJ_TYPE$ and $OBJECT$ of type $OBJ_TYPE$ is:

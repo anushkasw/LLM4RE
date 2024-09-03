@@ -5,4 +5,4 @@ Possible Relation Types: $RELATION_SET$
 $EXAMPLES$
 
 Context: $TEXT$
-Given the context, the relation between $SUBJECT$ of type $SUBJ_TYPE$ and $OBJECT$ of type $SUBJ_TYPE$ is:
+Given the context, the relation between $SUBJECT$ of type $SUBJ_TYPE$ and $OBJECT$ of type $OBJ_TYPE$ is:
