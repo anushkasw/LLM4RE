@@ -65,6 +65,7 @@ def main(args):
                 result = model_inference(tokenizer, model, prompt, device='cuda')
         except Exception as e:
             print(f'\n[Error] {e}')
+            continue
 
         test_res = {
             "id": input.id,
