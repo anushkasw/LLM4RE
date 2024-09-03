@@ -122,9 +122,9 @@ if __name__ == "__main__":
         print(f'[Error] {e}')
         print(traceback.format_exc())
         setattr(args, 'redo', True)
-        redo_bin = f'{args.out_path}/redo_exps/RC/{args.task}'
+        redo_bin = f'{args.out_path}/redo_exps/RC/{args.task}/{args.model}'
         os.makedirs(redo_bin, exist_ok=True)
-        with open(f'{redo_bin}/exp-{args.model}_{args.demo}_{args.prompt}_{args.k}.json', 'w') as f:
+        with open(f'{redo_bin}/exp-{args.demo}_{args.prompt}_{args.k}.json', 'w') as f:
             json.dump(args.__dict__, f)
 
 
