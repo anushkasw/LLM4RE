@@ -6,6 +6,7 @@ import numpy as np
 import json
 import time
 import os
+import sys
 import traceback
 
 import torch
@@ -26,6 +27,27 @@ def set_seed(seed):
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
 def main(args):
+    outpath = f'{args.out_path}/RC/{args.model}/{args.task}/{args.demo}'
+    os.makedirs(outpath, exist_ok=True)
+
+    data_processor = DataProcessor(args)
+    print(f'\tLoading training data')
+    train_dict = data_processor.get_train_examples()  # train data
+    print(f'\tLoading test data')
+    test_dict = data_processor.get_test_examples()
+
+    incomplete_flag = False
+    if os.path.exists(f'{outpath}/{args.prompt}-{args.k}.jsonl'):
+        with open(f'{outpath}/{args.prompt}-{args.k}.jsonl') as f:
+            batch = f.read().splitlines()
+        test_completed = {json.loads(line)['id']: json.loads(line) for line in batch if line != ""}
+        if len(test_completed) == len(test_dict):
+            print(f'\tResults already processed. Terminating')
+            sys.exit(1)
+        if len(test_completed) != len(test_dict):
+            print(f'\tSome results already processed. Setting incomplete_flag to True')
+            incomplete_flag = True
+
     if args.pipe:
         demo = Demo_HF(
             access_token=args.api_key,
@@ -37,25 +59,18 @@ def main(args):
         tokenizer, model = model_init(args.model, args.cache_dir)
 
     print(f'\tNumber of GPUs available: {torch.cuda.device_count()}')
-
-    outpath = f'{args.out_path}/RC/{args.model}/{args.task}/{args.demo}'
-    os.makedirs(outpath, exist_ok=True)
-
-    data_processor = DataProcessor(args)
-    print(f'\tLoading training data')
-    train_dict = data_processor.get_train_examples()  # train data
-    print(f'\tLoading test data')
-    test_dict = data_processor.get_test_examples()
-
     print(f'\tLoading Demo Mapping from: {args.data_dir}/{args.task}/{args.demo}Demo/k-{args.k}.jsonl')
     if os.path.exists(f'{args.data_dir}/{args.task}/{args.demo}Demo/k-{args.k}.jsonl'):
         with open(f'{args.data_dir}/{args.task}/{args.demo}Demo/k-{args.k}.jsonl', 'r') as f:
             demo_mapping = json.load(f)
     else:
-        raise FileNotFoundError(f'Cannot find {args.data_dir}/{args.task}/{args.demo}Demo/k-{args.k}.jsonl')
+        raise Exception(f'Cannot find {args.data_dir}/{args.task}/{args.demo}Demo/k-{args.k}.jsonl')
 
     test_res = []
     for test_idx, input in tqdm(test_dict.items()):
+        if incomplete_flag:
+            if input.id in test_completed:
+                continue
         demo_list = [train_dict[i] for i in demo_mapping[test_idx]]
         prompt = create_prompt(args, input, demo_list, data_processor)
 
@@ -97,6 +112,8 @@ if __name__ == "__main__":
     parser.add_argument('--out_path', '-out', type=str, default='./', required=True, help="Output Directory")
     parser.add_argument('--data_seed', type=int, default=13, help="k-shot demonstrations")
     parser.add_argument('--cache_dir', type=str, default="/blue/woodard/share/Relation-Extraction/LLM_for_RE/cache", help="LLM cache directory")
+
+    parser.add_argument('--redo', type=bool, default=False)
     args = parser.parse_args()
 
     try:
@@ -104,5 +121,11 @@ if __name__ == "__main__":
     except Exception as e:
         print(f'[Error] {e}')
         print(traceback.format_exc())
+        setattr(args, 'redo', True)
+        redo_bin = f'{args.out_path}/redo_exps/RC/{args.task}'
+        os.makedirs(redo_bin, exist_ok=True)
+        with open(f'{redo_bin}/exp-{args.model}_{args.demo}_{args.prompt}_{args.k}.json', 'w') as f:
+            json.dump(args.__dict__, f)
+
 
     print('\tDone.')
