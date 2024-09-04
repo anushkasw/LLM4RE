@@ -94,27 +94,33 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--api_key', '-key', type=str, required=True, help="Hugging Face API access token")
+    parser.add_argument('--api_key', '-key', type=str, required=False, help="Hugging Face API access token")
     parser.add_argument('--seed', type=int, required=False, default=42)
 
-    parser.add_argument('--task', '-t', type=str, required=True, help="Dataset Name.")
-    parser.add_argument('--k', type=str, required=True, help="k-shot demonstrations")
+    parser.add_argument('--task', '-t', type=str, required=False, help="Dataset Name.")
+    parser.add_argument('--k', type=str, required=False, help="k-shot demonstrations")
     parser.add_argument('--prompt', type=str, default='open', choices=['open', 'entrel', 'rel', 'ent'], help="Prompt Type")
     parser.add_argument('--demo', '-d', type=str, default='random', required=False, help="Demonstration Retrieval Strategy")
-    parser.add_argument('--model', '-m', type=str, default='meta-llama/Meta-Llama-3.1-8B-Instruct', required=True, help="LLM")
+    parser.add_argument('--model', '-m', type=str, default='meta-llama/Meta-Llama-3.1-8B-Instruct', required=False, help="LLM")
     parser.add_argument("--pipe", action='store_true', help="if use huggingface pipeline")
     parser.add_argument("--reason", action='store_true', help="Add reasoning to examples")
 
-    parser.add_argument('--data_dir', '-dir', type=str, required=True,
+    parser.add_argument('--data_dir', '-dir', type=str, required=False,
                         default="/blue/woodard/share/Relation-Extraction/Data")
     parser.add_argument('--prompt_dir', type=str, required=False,
                         default="/home/UFAD/aswarup/research/Relation-Extraction/LLM4RE/prompts")
-    parser.add_argument('--out_path', '-out', type=str, default='./', required=True, help="Output Directory")
+    parser.add_argument('--out_path', '-out', type=str, default='./', required=False, help="Output Directory")
     parser.add_argument('--data_seed', type=int, default=13, help="k-shot demonstrations")
     parser.add_argument('--cache_dir', type=str, default="/blue/woodard/share/Relation-Extraction/LLM_for_RE/cache", help="LLM cache directory")
 
+    parser.add_argument("--config_file", type=str, default=None,
+                        help="path to config file", required=True)
     parser.add_argument('--redo', type=bool, default=False)
     args = parser.parse_args()
+
+    if args.config_file:
+        with open(args.config_file, 'r') as f:
+            args.__dict__ = json.load(f)
 
     try:
         main(args)
