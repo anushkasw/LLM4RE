@@ -124,6 +124,7 @@ if __name__ == "__main__":
 
     try:
         main(args)
+        os.remove(args.config_file)
     except Exception as e:
         print(f'[Error] {e}')
         print(traceback.format_exc())
