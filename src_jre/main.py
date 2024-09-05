@@ -6,6 +6,7 @@ import numpy as np
 import json
 import time
 import os
+import traceback
 
 import torch
 import gc
@@ -96,8 +97,29 @@ if __name__ == "__main__":
     parser.add_argument('--out_path', '-out', type=str, default='./', required=True, help="Output Directory")
     parser.add_argument('--data_seed', type=int, default=13, help="k-shot demonstrations")
     parser.add_argument('--cache_dir', type=str, default="/blue/woodard/share/Relation-Extraction/LLM_for_RE/cache", help="LLM cache directory")
+    parser.add_argument("--config_file", type=str, default=None,
+                        help="path to config file", required=False)
+    parser.add_argument('--redo', type=bool, default=False)
     args = parser.parse_args()
 
-    main(args)
+    if args.config_file:
+        config_file = args.config_file
+        with open(args.config_file, 'r') as f:
+            args.__dict__ = json.load(f)
+            setattr(args, 'config_file', config_file)
+
+    try:
+        main(args)
+        if args.config_file:
+            os.remove(args.config_file)
+    except Exception as e:
+        print(f'[Error] {e}')
+        print(traceback.format_exc())
+        setattr(args, 'redo', True)
+        redo_bin = f'{args.out_path}/redo_exps/JRE/{args.task}/{args.model}'
+        os.makedirs(redo_bin, exist_ok=True)
+        with open(f'{redo_bin}/exp-{args.demo}_{args.prompt}_{args.k}.json', 'w') as f:
+            json.dump(args.__dict__, f)
 
     print('\tDone.')
+
