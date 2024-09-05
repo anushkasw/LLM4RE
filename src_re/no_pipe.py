@@ -14,11 +14,11 @@ def model_init(model_name, cache_dir, device='cuda'):
     return tokenizer, model
 
 
-def model_inference(tokenizer, model, prompt, device='cuda'):
+def model_inference(tokenizer, model, prompt, max_new_tokens, device='cuda'):
     tokenized_chat = tokenizer.apply_chat_template(prompt, tokenize=True, add_generation_prompt=True,
                                                    return_tensors="pt")
     tokenized_chat = tokenized_chat.to(device)
-    outputs = model.generate(tokenized_chat, max_new_tokens=300, do_sample=False,
+    outputs = model.generate(tokenized_chat, max_new_tokens=max_new_tokens, do_sample=False,
                                     pad_token_id=tokenizer.eos_token_id
                                    )
     # generated_ids = outputs.sequences

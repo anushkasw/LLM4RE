@@ -40,7 +40,7 @@ class instance:
             self.tail_type = "unkown"
 
 class DataProcessor:
-    def __init__(self, args):
+    def __init__(self, args, data_seed):
         with open(f'{args.data_dir}/{args.task}/rel2id.json', "r") as f:
             self.rel2id = json.loads(f.read())
 
@@ -69,7 +69,7 @@ class DataProcessor:
             self.reasons = None
 
         self.train_path = f'{args.data_dir}/{args.task}/train.json'
-        self.test_path = f'{args.data_dir}/{args.task}/test.json'
+        self.test_path = f'{args.data_dir}/{args.task}/test-{data_seed}.json'
 
     def get_train_examples(self):
         return self.get_examples(self.train_path)
