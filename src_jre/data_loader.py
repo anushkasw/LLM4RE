@@ -1,5 +1,6 @@
 import json
 import re
+import os
 from tqdm import tqdm
 
 def flatten_list(labels):
@@ -37,6 +38,7 @@ class instance:
             else: tailtype = mentions['em2Type']
 
             self.triples.append({
+                'id': mentions['sent_id'],
                 'head': mentions['em1Text'],
                 'tail': mentions['em2Text'],
                 'head_type': headtype,
@@ -46,26 +48,6 @@ class instance:
             }
             )
 
-        # self.reference = ("The relation between \"" + self.head + "\" and \""
-        #                   + self.tail + "\" in the sentence \"" + self.sentence + "\"")
-        # self.context = "\nContext: " + self.sentence
-        # self.query = ("\nQuestion: What is the relation between " + self.head
-        #               + " and " + self.tail + "?")
-        # self.clue = "\nClues: "
-        # self.pred = "\nAnswer: "
-        # self.prompt = self.context + self.query
-
-    # def get_relation(self, tmp_dict):
-    #     if tmp_dict["relations"] == [[]]:
-    #         return "NONE"
-    #     else:
-    #         return tmp_dict["relations"][0][0][4]
-    #
-    # def get_reason(self, idtoprompt, reltoid):
-    #     reason = ("What are the clues that lead the relation between \""
-    #               + self.head + "\" and \"" + self.tail + "\" to be "
-    #               + idtoprompt[reltoid[self.rel]] + " in the sentence \"" + string + "\"?")
-    #     return reason
 
 class DataProcessor:
     def __init__(self, args):
@@ -74,15 +56,28 @@ class DataProcessor:
 
         # Mapping 'no_relation' and 'Other' labels to 'NONE'
         if args.task in ["semeval_nodir", "GIDS"]:
-            self.rel2id['none'] = self.rel2id.pop('Other')
+            self.rel2id['NONE'] = self.rel2id.pop('Other')
             args.na_idx = self.rel2id['NONE']
         elif args.task in ["tacred", "tacrev", "retacred", "dummy_tacred", "kbp37_nodir"]:
-            self.rel2id['none'] = self.rel2id.pop('no_relation')
-            args.na_idx = self.rel2id['none']
+            self.rel2id['NONE'] = self.rel2id.pop('no_relation')
+            args.na_idx = self.rel2id['NONE']
 
         self.rel2prompt = self.get_rel2prompt(args)
 
-        # Demonstration Retrieval
+        if os.path.exists(f'{args.data_dir}/{args.task}/ner2id.json'):
+            with open(f'{args.data_dir}/{args.task}/ner2id.json') as f:
+                self.ner2id = json.load(f)
+
+        if args.reason:
+            self.reasons = {}
+            with open(f'{args.data_dir}/{args.task}/test_reason.jsonl') as f:
+                batch = f.read().splitlines()
+            train_reason = [json.loads(line) for line in batch if line != ""]
+            for reason_dict in train_reason:
+                self.reasons[reason_dict['custom_id']] = reason_dict['response']['body']['choices'][0]['message']['content']
+        else:
+            self.reasons = None
+
         self.train_path = f'{args.data_dir}/{args.task}/train.jsonl'
         self.test_path = f'{args.data_dir}/{args.task}/test.jsonl'
 
@@ -163,7 +158,7 @@ class DataProcessor:
             labels = [item.lower() for item in labels]
 
             if args.task == 'semeval_nodir':
-                rel2prompt[name] = ' and '.join(labels).lower()
+                rel2prompt[name] = ' and '.join(labels).upper()
             else:
-                rel2prompt[name] = ' '.join(labels).lower()
+                rel2prompt[name] = ' '.join(labels).upper()
         return rel2prompt

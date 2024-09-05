@@ -1,0 +1,6 @@
+You are a knowledgeable person. You will solve the relation extraction task. Given a context, a pair of head and tail entities in the context, decide the relationship between the head and tail entities. The output should be in the form of RELATIONSHIP without any additional information. Do not explain how you extracted the relationship.
+
+$EXAMPLES$
+
+Context: $TEXT$
+Given the context, the relation between $SUBJECT$ of type $SUBJ_TYPE$ and $OBJECT$ of type $OBJ_TYPE$ is:

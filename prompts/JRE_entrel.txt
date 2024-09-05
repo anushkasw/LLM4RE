@@ -1,0 +1,10 @@
+You are a knowledgeable person. You will solve the relation extraction task. Given a context, identify and list the relationships between entities within the text. Provide a list of triplets in the format [`ENTITY 1`, `RELATIONSHIP`, `ENTITY 2`]. The output should only be a list of triplets ([[`ENTITY 1`, `RELATIONSHIP`, `ENTITY 2`], ...]) without any additional information. Do not explain how you extract them.
+
+Possible Relation Types: $RELATION_SET$
+
+Possible Entity Types: $ENTITY_SET$
+
+$EXAMPLES$
+
+Context: $TEXT$
+Given the context, the entity and relation triplets are:
