@@ -1,13 +1,13 @@
 #!/bin/bash
-#SBATCH --job-name=test_seladapt
-#SBATCH --output=test_seladapt_output
+#SBATCH --job-name=test_seladapt_20
+#SBATCH --output=test_seladapt_output_20
 #SBATCH --mail-user=tpan1@ufl.edu
 #SBATCH --mail-type=ALL
 #SBATCH --time=1-00:00:00             # Time limit hrs:min:sec
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem-per-cpu=30gb                 # Job Memory
+#SBATCH --mem-per-cpu=10gb                 # Job Memory
 #SBATCH --partition=gpu
 #SBATCH --gres=gpu:a100:1
 #SBATCH --qos=woodard
@@ -33,9 +33,9 @@ python3 /blue/woodard/share/Relation-Extraction/bell/LLM4RE/SelfAdapt/SelfAdapt_
   --retriever_model "all-mpnet-base-v2" \
   --output_file "/blue/woodard/share/Relation-Extraction/bell/LLM4RE/SelfAdapt/SelfAdapt_RE/output/test.json" \
   --index_file "/blue/woodard/share/Relation-Extraction/bell/LLM4RE/SelfAdapt/SelfAdapt_RE/index/" \
-  --batch_size 32 \
+  --batch_size 64 \
   --num_candidates 10 \
-  --num_ice 8 \
+  --num_ice 20 \
   --method "topk" \
   --rand_seed 42 \
   --overwrite "True" \
