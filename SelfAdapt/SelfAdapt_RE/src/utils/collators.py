@@ -1,11 +1,16 @@
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Union
+import os
 
 import torch
 from transformers import PreTrainedTokenizerBase, BatchEncoding
 from transformers.file_utils import PaddingStrategy
+<<<<<<< HEAD
+=======
 
+>>>>>>> 0cc934febc0090f3eb22c2be6891852d9004b927
 
+os.environ['TRANSFORMERS_CACHE'] = "/blue/woodard/share/HR_Models"
 
 class ListWrapper:
     def __init__(self, data: List[Any]):
