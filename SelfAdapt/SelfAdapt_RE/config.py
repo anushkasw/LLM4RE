@@ -2,9 +2,15 @@ class Config:
     def __init__(self):
         # General settings
         self.output_file = None  # Path to save the output results
+<<<<<<< HEAD
+        self.rand_seed = 42
+        self.num_candidates = 10  # Number of candidates to retrieve in TopK search
+        self.num_ice = 20  # Number of in-context examples to select
+=======
         self.rand_seed = 1
         self.num_candidates = 10  # Number of candidates to retrieve in TopK search
         self.num_ice = 8  # Number of in-context examples to select
+>>>>>>> 0cc934febc0090f3eb22c2be6891852d9004b927
         self.batch_size = 64
         self.cuda_device = "cuda:0"  # CUDA device for processing
         self.overwrite = True  # Whether to overwrite existing output files

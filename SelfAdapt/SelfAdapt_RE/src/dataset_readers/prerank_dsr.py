@@ -1,6 +1,14 @@
 import torch
+<<<<<<< HEAD
+import os
 from src.dataset_readers.dataset_wrappers import get_dataset_wrapper
 
+os.environ['TRANSFORMERS_CACHE'] = "/blue/woodard/share/HR_Models"
+
+=======
+from src.dataset_readers.dataset_wrappers import get_dataset_wrapper
+
+>>>>>>> 0cc934febc0090f3eb22c2be6891852d9004b927
 class PrerankDatasetReader(torch.utils.data.Dataset):
     def __init__(self, task, examples=None, dataset_path=None, dataset_split=None,
                  ds_size=None, tokenizer=None, field="token") -> None:
