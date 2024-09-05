@@ -264,6 +264,18 @@ class PreRank:
         num_labels = len(self.rel2id)
         return 1.0 / num_labels
 
+    def save_results(self, data_list):
+        logger.info("Saving output...")
+        try:
+            # Write the results in chunks to avoid loss of data
+            with open(self.output_file, "w") as f:
+                json.dump(data_list, f, ensure_ascii=False, indent=4)
+                f.flush()  # Make sure the data is written to disk
+                os.fsync(f.fileno())  # Ensure all data is physically written to disk
+        except Exception as e:
+            logger.error(f"Error writing output: {str(e)}")
+            raise
+
     def find(self):
         res_list = self.forward(self.dataloader)
         data_list = []
@@ -289,10 +301,9 @@ class PreRank:
             query_full_entry['ctxs'] = ranked_ctxs_ids
             data_list.append(query_full_entry)
 
-        logger.info("Saving output...")
-        with open(self.output_file, "w") as f:
-            json.dump(data_list, f)
-                
+        # Save the results after processing
+        self.save_results(data_list)
+
 
 def main():
     config = Config()
