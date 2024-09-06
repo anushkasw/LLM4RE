@@ -29,7 +29,7 @@ def set_seed(seed):
 
 
 def main(args):
-    for k in [5, 10, 20, 30]:
+    for k in [5, 10, 20]:
         print(f'\tEvaluating Shot - {k}')
         for data_seed in [100, 13, 42]:
             print(f'\tEvaluating Seed - {data_seed}')

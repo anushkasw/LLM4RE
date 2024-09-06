@@ -32,7 +32,7 @@ def get_demonstration_mappings(args):
     outpath = f'{args.data_dir}/{args.task}/randomDemo'
     os.makedirs(outpath, exist_ok=True)
 
-    data_processor = DataProcessor(args)
+    data_processor = DataProcessor(args) #TODO: Don't use this dataloader; test file set to subsets
     # for seed in [13, 42, 100]:
     for k in [1, 5, 10, 20, 30]:
         train_dict = data_processor.get_train_examples()  # train data
