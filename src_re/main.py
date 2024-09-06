@@ -47,7 +47,7 @@ def main(args):
                 test_completed = {json.loads(line)['id']: json.loads(line) for line in batch if line != ""}
                 if len(test_completed) == len(test_dict):
                     print(f'\tResults already processed. Terminating')
-                    sys.exit(1)
+                    continue
                 if len(test_completed) != len(test_dict):
                     print(f'\tSome results already processed. Setting incomplete_flag to True')
                     incomplete_flag = True
