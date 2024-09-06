@@ -138,7 +138,7 @@ if __name__ == "__main__":
         main(args)
         if args.config_file or os.path.exists(
                 f'{args.out_path}/redo_exps/JRE/{args.task}/{args.model}/exp-{args.demo}_{args.prompt}.json'):
-            os.remove(args.config_file)
+            os.remove(f'{args.out_path}/redo_exps/JRE/{args.task}/{args.model}/exp-{args.demo}_{args.prompt}.json')
     except Exception as e:
         print(f'[Error] {e}')
         print(traceback.format_exc())

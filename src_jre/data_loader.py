@@ -20,7 +20,7 @@ class instance:
         self.triples = []
         for mentions in tmp_dict['relationMentions']:
             if mentions["label"] in ['no_relation', 'Other']:
-                relation = "none"
+                relation = "NONE"
             else:
                 relation = mentions["label"]
             prompt_label = rel2prompt[relation]
