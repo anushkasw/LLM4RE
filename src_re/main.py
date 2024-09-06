@@ -27,7 +27,7 @@ def set_seed(seed):
     if torch.cuda.is_available():
         torch.cuda.manual_seed_all(seed)
 def main(args):
-    for k in [5, 10, 20, 30]:
+    for k in [5, 10, 20]:
         print(f'Evaluating Shot - {k}')
         for data_seed in [100, 13, 42]:
             print(f'Evaluating Seed - {data_seed}')
