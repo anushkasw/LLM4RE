@@ -28,9 +28,9 @@ def set_seed(seed):
         torch.cuda.manual_seed_all(seed)
 def main(args):
     for k in [5, 10, 20, 30]:
-        print(f'\tEvaluating Shot - {k}')
+        print(f'Evaluating Shot - {k}')
         for data_seed in [100, 13, 42]:
-            print(f'\tEvaluating Seed - {data_seed}')
+            print(f'Evaluating Seed - {data_seed}')
             outpath = f'{args.out_path}/RC/{args.model}/{args.task}/{args.demo}/seed-{data_seed}'
             os.makedirs(outpath, exist_ok=True)
 
