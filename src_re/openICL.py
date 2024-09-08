@@ -32,7 +32,8 @@ def main(args):
         if args.demo == 'dpp':
             retriever = DPPRetriever(data, ice_num=ice_num)
         if args.demo == 'mdl':
-            retriever = MDLRetriever(data, ice_num=ice_num)
+            retriever = MDLRetriever(data, ice_num=ice_num,
+                                     candidate_num=30, select_time=10, seed=1, batch_size=12)
         demo_ids = retriever.retrieve()
         train_ids = retriever.index_ds['id']
 
