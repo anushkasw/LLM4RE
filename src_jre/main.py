@@ -110,9 +110,14 @@ def main(args):
 
             incomplete_flag = False
             if os.path.exists(f'{outpath}/{args.prompt}-{k}.jsonl'):
-                with open(f'{outpath}/{args.prompt}-{k}.jsonl') as f:
-                    batch = f.read().splitlines()
-                test_completed = {json.loads(line)['id']: json.loads(line) for line in batch if line != ""}
+                if args.model != 'OpenAI/gpt-4o-mini':
+                    with open(f'{outpath}/{args.prompt}-{k}.jsonl') as f:
+                        batch = f.read().splitlines()
+                    test_completed = {json.loads(line)['id']: json.loads(line) for line in batch if line != ""}
+                else:
+                    with open(f'{outpath}/{args.prompt}-{k}.jsonl') as f:
+                        batch = f.read().splitlines()
+                        test_completed = {json.loads(line)['custom_id']: json.loads(line) for line in batch if line != ""}
                 if len(test_completed) == len(test_dict):
                     print(f'\tResults already processed. Terminating')
                     continue
