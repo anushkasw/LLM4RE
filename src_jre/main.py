@@ -30,7 +30,10 @@ def set_seed(seed):
 def main_zero(args):
     for data_seed in [100, 13, 42]:
         print(f'\tEvaluating Seed - {data_seed}')
-        outpath = f'{args.out_path}/JRE/{args.model}/{args.task}/{args.demo}/seed-{data_seed}'
+        if args.model != 'OpenAI/gpt-4o-mini':
+            outpath = f'{args.out_path}/JRE/{args.model}/{args.task}/{args.demo}/seed-{data_seed}'
+        else:
+            outpath = f'{args.out_path}/JRE/{args.model}/{args.task}/{args.demo}/seed-{data_seed}/input'
         os.makedirs(outpath, exist_ok=True)
 
         data_processor = DataProcessor(args, data_seed)
@@ -49,7 +52,10 @@ def main_zero(args):
                 print(f'\tSome results already processed. Setting incomplete_flag to True')
                 incomplete_flag = True
 
-        tokenizer, model = model_init(args.model, args.cache_dir)
+        if args.model != 'OpenAI/gpt-4o-mini':
+            tokenizer, model = model_init(args.model, args.cache_dir)
+        else:
+            tokenizer, model = None, None
         print(f'\tNumber of GPUs available: {torch.cuda.device_count()}')
 
         for test_idx, input in tqdm(test_dict.items()):
@@ -59,20 +65,30 @@ def main_zero(args):
             demo_list = None
             prompt = create_prompt(args, input, demo_list, data_processor)
 
-            try:
-                result = model_inference(tokenizer, model, prompt, max_new_tokens=300, device='cuda')
-            except Exception as e:
-                print(f'\n[Error] {e}')
+            if args.model != 'OpenAI/gpt-4o-mini':
+                try:
+                    result = model_inference(tokenizer, model, prompt, max_new_tokens=300, device='cuda')
+                except Exception as e:
+                    print(f'\n[Error] {e}')
 
-            test_res = {
-                "id": input.id,
-                "label_pred": result,
-            }
+                test_res = {
+                    "id": input.id,
+                    "label_pred": result,
+                }
 
-            with open(f'{outpath}/{args.prompt}-0.jsonl', 'a') as f:
-                if f.tell() > 0:  # Check if file is not empty
-                    f.write('\n')
-                json.dump(test_res, f)
+                with open(f'{outpath}/{args.prompt}-0.jsonl', 'a') as f:
+                    if f.tell() > 0:  # Check if file is not empty
+                        f.write('\n')
+                    json.dump(test_res, f)
+            else:
+                batch_dict = {"custom_id": input.id, "method": "POST", "url": "/v1/chat/completions",
+                              "body": {"model": "gpt-4o-mini",
+                                       "messages": prompt, "temperature": 0,
+                                       "max_tokens": 300, "logprobs": True}}
+                with open(f'{outpath}/{args.prompt}-0.jsonl', 'a') as f:
+                    if f.tell() > 0:  # Check if file is not empty
+                        f.write('\n')
+                    json.dump(batch_dict, f)
         del data_processor, model, tokenizer
 
 def main(args):
@@ -80,7 +96,10 @@ def main(args):
         print(f'\tEvaluating Shot - {k}')
         for data_seed in [100, 13, 42]:
             print(f'\tEvaluating Seed - {data_seed}')
-            outpath = f'{args.out_path}/JRE/{args.model}/{args.task}/{args.demo}/seed-{data_seed}'
+            if args.model != 'OpenAI/gpt-4o-mini':
+                outpath = f'{args.out_path}/JRE/{args.model}/{args.task}/{args.demo}/seed-{data_seed}'
+            else:
+                outpath = f'{args.out_path}/JRE/{args.model}/{args.task}/{args.demo}/seed-{data_seed}/input'
             os.makedirs(outpath, exist_ok=True)
 
             data_processor = DataProcessor(args, data_seed)
@@ -101,7 +120,10 @@ def main(args):
                     print(f'\tSome results already processed. Setting incomplete_flag to True')
                     incomplete_flag = True
 
-            tokenizer, model = model_init(args.model, args.cache_dir)
+            if args.model != 'OpenAI/gpt-4o-mini':
+                tokenizer, model = model_init(args.model, args.cache_dir)
+            else:
+                tokenizer, model = None, None
 
             print(f'\tNumber of GPUs available: {torch.cuda.device_count()}')
 
@@ -119,20 +141,34 @@ def main(args):
                 demo_list = [train_dict[i] for i in demo_mapping[test_idx]]
                 prompt = create_prompt(args, input, demo_list, data_processor)
 
-                try:
-                    result = model_inference(tokenizer, model, prompt, max_new_tokens=300, device='cuda')
-                except Exception as e:
-                    print(f'\n[Error] {e}')
+                if args.model != 'OpenAI/gpt-4o-mini':
+                    try:
+                        result = model_inference(tokenizer, model, prompt, max_new_tokens=300, device='cuda')
+                    except Exception as e:
+                        print(f'\n[Error] {e}')
 
-                test_res = {
-                    "id": input.id,
-                    "label_pred": result,
-                }
+                    test_res = {
+                        "id": input.id,
+                        "label_pred": result,
+                    }
 
-                with open(f'{outpath}/{args.prompt}-{k}.jsonl', 'a') as f:
-                    if f.tell() > 0:  # Check if file is not empty
-                        f.write('\n')
-                    json.dump(test_res, f)
+                    with open(f'{outpath}/{args.prompt}-{k}.jsonl', 'a') as f:
+                        if f.tell() > 0:  # Check if file is not empty
+                            f.write('\n')
+                        json.dump(test_res, f)
+                else:
+                    try:
+                        batch_dict = {"custom_id": input.id, "method": "POST", "url": "/v1/chat/completions",
+                                      "body": {"model": "gpt-4o-mini",
+                                               "messages": prompt, "temperature": 0,
+                                               "max_tokens": 300, "logprobs": True}}
+                        with open(f'{outpath}/{args.prompt}-{k}.jsonl', 'a') as f:
+                            if f.tell() > 0:  # Check if file is not empty
+                                f.write('\n')
+                            json.dump(batch_dict, f)
+                    except Exception as e:
+                        print(f'\n[Error] {e}')
+
             del data_processor, model, tokenizer
 
 
