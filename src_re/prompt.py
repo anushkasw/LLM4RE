@@ -32,7 +32,7 @@ def get_demo(demo_list, prompt_type, reason=None):
     return demo_prompt
 
 def create_prompt(args, input, demo_list, data_processor):
-    if not args.zero:
+    if not args.demo == 'zero':
         with open(f'{args.prompt_dir}/RC_{args.prompt}.txt', 'r') as f:
             prompt = f.read()
     else:
@@ -43,7 +43,7 @@ def create_prompt(args, input, demo_list, data_processor):
     if args.prompt == 'rel' or args.prompt == 'entrel':
         prompt = prompt.replace("$RELATION_SET$", '[' + ', '.join(str(x) for x in relations) + ']')
 
-    if not args.zero:
+    if not args.demo == 'zero':
         examples = get_demo(demo_list, args.prompt, data_processor.reasons)
         prompt = prompt.replace("$EXAMPLES$", examples)
 
