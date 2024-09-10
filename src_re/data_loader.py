@@ -25,7 +25,7 @@ class instance:
 
         ss, se = tmp_dict['subj_start'], tmp_dict['subj_end']
         self.head = ' '.join(tmp_dict['token'][ss:se + 1])
-        self.head_type = tmp_dict['subj_type'].lower().replace('_', ' ')
+        self.head_type = tmp_dict['subj_type'].replace('_', ' ')
         if self.head_type == "misc":
             self.headtype = "miscellaneous"
         elif self.head_type == 'O':
@@ -33,7 +33,7 @@ class instance:
 
         os, oe = tmp_dict['obj_start'], tmp_dict['obj_end']
         self.tail = ' '.join(tmp_dict['token'][os:oe + 1])
-        self.tail_type = tmp_dict['obj_type'].lower().replace('_', ' ')
+        self.tail_type = tmp_dict['obj_type'].replace('_', ' ')
         if self.tail_type == "misc":
             self.tail_type = "miscellaneous"
         elif self.tail_type == 'O':
