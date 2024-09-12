@@ -12,7 +12,7 @@ import logging
 def main(args):
     demo = Demo(
         api_key=args.api_key,
-        engine=args.model,
+        engine="text-embedding-3-large",
         temperature=0,
         max_tokens=300,
         top_p=1,
@@ -29,7 +29,6 @@ def main(args):
     for file in batch_files:
         if not os.path.exists(f'{args.output_dir}/output/{file.name}'):
             print(f'Processing: {file}')
-            start_time = time.time()
             result = demo.process_batch(file)
 
             if result:
