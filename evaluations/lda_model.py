@@ -22,7 +22,7 @@ def preprocess(text):
 def main(args):
     print(f"Training LDA model for {args.task}...")
 
-    outpath = f'{args.output_dir}/{args.task}/topical_process'
+    outpath = f'{args.output_dir}/{args.task}'
     os.makedirs(outpath, exist_ok=True)
 
     all_source_texts = pd.read_json(f'{args.data_dir}/{args.task}/test.json', lines=True)['text'].to_list()
