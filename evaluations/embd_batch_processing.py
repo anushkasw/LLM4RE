@@ -15,6 +15,7 @@ def main(args):
         engine="text-embedding-3-large",
         temperature=0,
         max_tokens=300,
+        endpoint="/v1/embeddings",
         top_p=1,
         frequency_penalty=0,
         presence_penalty=0,

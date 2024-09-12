@@ -10,9 +10,10 @@ import time
 # base_url = os.getenv('OPENAI_API_BASE')
 
 class Demo:
-    def __init__(self, api_key, engine, temperature, max_tokens, top_p, frequency_penalty, presence_penalty, logprobs):
+    def __init__(self, api_key, engine, temperature, max_tokens, top_p, frequency_penalty, presence_penalty, logprobs, endpoint="/v1/chat/completions"):
         self.api_key = api_key
         self.engine = engine
+        self.endpoint = endpoint
         self.temperature = temperature
         self.max_tokens = max_tokens
         self.top_p = top_p
@@ -37,7 +38,7 @@ class Demo:
         # Create the batch job
         batch_job = self.client.batches.create(
             input_file_id=uploaded_file.id,
-            endpoint="/v1/chat/completions",
+            endpoint=self.endpoint,
             completion_window="24h"
         )
 
