@@ -35,13 +35,13 @@ def main(args):
     dictionary = corpora.Dictionary(processed_texts)
     corpus = [dictionary.doc2bow(text) for text in processed_texts]
 
-    with open(f'{outpath}/dictionary.pkl', 'wb') as f:
+    with open(f'{outpath}/dictionary.joblib', 'wb') as f:
         joblib.dump(dictionary, f)
 
     # Train LDA model
     lda = LdaModel(corpus, num_topics=args.topic_nums, id2word=dictionary)
 
-    with open(f'{outpath}/lda.pkl', 'wb') as f:
+    with open(f'{outpath}/lda.joblib', 'wb') as f:
         joblib.dump(lda, f)
 
 if __name__ == "__main__":
