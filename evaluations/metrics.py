@@ -21,7 +21,7 @@ from data_loader import get_RC_data, get_JRE_data
 
 # with open('/home/UFAD/aswarup/research/Relation-Extraction/LLM4RE/COLING25/gre_element_embedding_dict.json', 'r') as f:
 #     ELE_EMB_DICT = json.load(f)
-
+ELE_EMB_DICT = None
 # def get_gt_embds(data_dict):
 #     gt_triple_emb_store = {}
 #     gt_relation_emb_store = {}
@@ -81,8 +81,9 @@ def main(args):
                             sample = json.loads(line)
                             tmp_dict[sample['id']] = sample
 
-                    # ts = get_ts_scores(data_dict, tmp_dict, dictionary, lda_model) # TODO: fix triples with more than 3 elements
-                    # uq = calculate_uniqueness_score(tmp_dict, ELE_EMB_DICT)
+                    ts = get_ts_scores(args.exp, data_dict, tmp_dict, dictionary, lda_model)
+                    if args.exp=='JRE':
+                        uq = calculate_uniqueness_score(tmp_dict, ELE_EMB_DICT)
                     # cs = calculate_completeness_score(tmp_dict, gt_triple_emb_store, gt_relation_emb_store, ELE_EMB_DICT)
 
                     res_dict = tmp_dict.copy()
@@ -97,13 +98,13 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--exp', '-e', type=str, required=False, help="Experiment Type", default="JRE")
+    parser.add_argument('--exp', '-e', type=str, required=False, help="Experiment Type", default="RC")
     parser.add_argument('--ts', type=bool, default=False)
     # parser.add_argument('--model_name', '-m', type=str, required=False, help="Model Name.", default="mistral")
     #
     parser.add_argument('--base_path', '-dir', type=str, required=False,
                         default="/home/UFAD/aswarup/research/Relation-Extraction/LLM4RE/COLING25")
-    parser.add_argument("--data_dir", default='/home/UFAD/aswarup/research/Relation-Extraction/Data_JRE', type=str, required=False,
+    parser.add_argument("--data_dir", default='/home/UFAD/aswarup/research/Relation-Extraction/Data', type=str, required=False,
                         help="raw data dir")
 
     args = parser.parse_args()
