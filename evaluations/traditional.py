@@ -17,24 +17,66 @@ def calculate_jre_metrics(predicted_relations, ground_truth_relations):
 
         return precision, recall, f1
 
-def calculate_rc_metrics(preds, labels, na_idx=False):
-    n_gold = n_pred = n_correct = 0
-    for pred, label in zip(preds, labels):
-        n_pred += 1
-        n_gold += 1
-        if pred == label:
-            n_correct += 1
+def f1_score(true, pred_result):
+    correct = 0
+    total = len(true)
+    correct_positive = 0
+    pred_positive = 0
+    gold_positive = 0
 
-    if n_correct == 0:
-        return 0.0, 0.0, 0.0
-    else:
-        prec = n_correct * 1.0 / n_pred
-        recall = n_correct * 1.0 / n_gold
-        if prec + recall > 0:
-            f1 = 2.0 * prec * recall / (prec + recall)
-        else:
-            f1 = 0.0
-        return prec, recall, f1
+    for i in range(total):
+        golden = true[i]
+        if golden == pred_result[i]:
+            correct += 1
+            if golden not in ['NA', 'na', 'no_relation', 'Other', 'Others', 'false', 'unanswerable', 'NONE']:
+                correct_positive += 1
+        if golden not in ['NA', 'na', 'no_relation', 'Other', 'Others', 'false', 'unanswerable', 'NONE']:
+            gold_positive +=1
+        if pred_result[i] not in ['NA', 'na', 'no_relation', 'Other', 'Others', 'false', 'unanswerable', 'NONE']:
+            pred_positive += 1
+    try:
+        micro_p = float(correct_positive) / float(pred_positive)
+    except:
+        micro_p = 0
+    try:
+        micro_r = float(correct_positive) / float(gold_positive)
+    except:
+        micro_r = 0
+    try:
+        micro_f1 = 2 * micro_p * micro_r / (micro_p + micro_r)
+    except:
+        micro_f1 = 0
+    return micro_p, micro_r, micro_f1
+
+
+def f1_score_na(true, pred_result):
+    correct = 0
+    total = len(true)
+    correct_positive = 0
+    pred_positive = 0
+    gold_positive = 0
+
+    for i in range(total):
+        golden = true[i]
+        if golden == pred_result[i]:
+            correct += 1
+            correct_positive += 1
+        gold_positive +=1
+        pred_positive += 1
+    try:
+        micro_p = float(correct_positive) / float(pred_positive)
+    except:
+        micro_p = 0
+    try:
+        micro_r = float(correct_positive) / float(gold_positive)
+    except:
+        micro_r = 0
+    try:
+        micro_f1 = 2 * micro_p * micro_r / (micro_p + micro_r)
+    except:
+        micro_f1 = 0
+    return micro_p, micro_r, micro_f1
+
 
 def get_traditional_scores(exp, tmp_dict, prompt2rel):
     if exp == 'JRE':
@@ -72,7 +114,7 @@ def get_traditional_scores(exp, tmp_dict, prompt2rel):
             else:
                 pred_label.append(relation)
             true_label.append(dict_['true_label'])
-        p, r, f = calculate_rc_metrics(pred_label, true_label, na_idx=True)
+        p, r, f = f1_score(pred_label, true_label, na_idx=True)
         return p, r, f
 
 

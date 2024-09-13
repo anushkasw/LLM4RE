@@ -16,16 +16,18 @@ def preprocess(text):
 
 def get_ts_scores(exp, data_dict, tmp_dict, dictionary, lda_model):
     all_ts_scores = {}
+
+
     for idx, dict_ in tmp_dict.items():
         source_text = data_dict[idx]['text']
         triples = dict_['pred_label']
         if exp == 'JRE':
             triples_str = ''
-            if len(triples) == 3:
-                for triple in triples:
+            for triple in triples:
+                if len(triple) == 3:
                     triples_str += f"{triple[0]} {triple[1]} {triple[2]} ."
-            else:
-                continue
+                else:
+                    continue
         else:
             if triples and triples != 'Other':
                 triples_str = triples
