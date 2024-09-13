@@ -60,7 +60,7 @@ def main(args):
         for model in ["openchat/openchat_3.5", "meta-llama/Meta-Llama-3.1-8B-Instruct", "mistralai/Mistral-Nemo-Instruct-2407",
                       "google/gemma-2-9b-it", "OpenAI/gpt-4o-mini"]:
             files = list(
-                Path(f'{args.base_path}/processed_results/JRE/{data}/{model}'
+                Path(f'{args.base_path}/processed_results/{args.exp}/{data}/{model}'
                      ).rglob('*.jsonl'))
 
             for file in files:
