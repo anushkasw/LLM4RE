@@ -24,10 +24,11 @@ def get_traditional_scores(tmp_dict, prompt2rel):
 
     for idx, dict_ in tmp_dict.items():
         triples = dict_['pred_label']
-        for trip in triples:
-            if len(trip) > 1:
-                if trip[1] in prompt2rel:
-                    trip[1] = prompt2rel[trip[1]]
+        if triples:
+            for trip in triples:
+                if len(trip) > 1:
+                    if trip[1] in prompt2rel:
+                        trip[1] = prompt2rel[trip[1]]
 
     for idx, dict_ in tmp_dict.items():
         gt_triples = dict_['true_label']

@@ -26,7 +26,7 @@ os.environ['TRANSFORMERS_CACHE'] = "/blue/woodard/share/HR_Models"
 class PreRank:
     def __init__(self, cfg, data_processor) -> None:
         self.cuda_device = torch.device(cfg.cuda_device if torch.cuda.is_available() else "cpu")
-        self.retriever_model = SentenceTransformer(cfg.retriever_model, cache_folder="/blue/woodard/share/HR_Models").to(self.cuda_device) \
+        self.retriever_model = SentenceTransformer(cfg.retriever_model, cache_folder="/home/UFAD/aswarup/research/Relation-Extraction/LLM_cache").to(self.cuda_device) \
             if cfg.retriever_model != 'none' else None
         self.retriever_model.eval()
 
@@ -308,8 +308,8 @@ class PreRank:
 def main():
     config = Config()
 
-    config.output_file = "/blue/woodard/share/Relation-Extraction/bell/LLM4RE/SelfAdapt/SelfAdapt_RE/output/test.json"
-    config.index_file = "/blue/woodard/share/Relation-Extraction/bell/LLM4RE/SelfAdapt/SelfAdapt_RE/index/"
+    config.output_file = "/home/UFAD/aswarup/research/Relation-Extraction/LLM4RE/SelfAdapt/SelfAdapt_RE/output/test.json"
+    config.index_file = "/home/UFAD/aswarup/research/Relation-Extraction/LLM4RE/LLM4RE/SelfAdapt/SelfAdapt_RE/index/"
 
     logger.info(config.__dict__)
     if not config.overwrite and os.path.exists(config.output_file):
