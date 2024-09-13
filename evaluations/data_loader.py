@@ -2,13 +2,13 @@ import json
 
 
 def get_RC_data(data):
-    with open(f'home/UFAD/aswarup/research/Relation-Extraction/Data/{data}/test.json', "r") as f:
+    with open(f'/home/UFAD/aswarup/research/Relation-Extraction/Data/{data}/test.json', "r") as f:
         test_data = json.load(f)
 
     data_dict = {}
     for sample in test_data:
         row = {
-            'text': " ".join(sample['tokens']).lower(),
+            'text': " ".join(sample['token']).lower(),
             'relation': sample['relation']
         }
         data_dict[sample['id']] = row
