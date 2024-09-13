@@ -38,7 +38,7 @@ ELE_EMB_DICT = None
 #     return gt_triple_emb_store, gt_relation_emb_store
 
 def main(args):
-    df = pd.DataFrame(columns=['exp', 'dataset', 'model', 'demo', 'seed', 'k', 'prompt', 'f1', 'p', 'r'])
+    df = pd.DataFrame(columns=['exp', 'dataset', 'model', 'demo', 'seed', 'k', 'prompt', 'f1', 'p', 'r', 'ts'])
 
     for data in ['NYT10', 'tacred', 'crossRE', 'FewRel']:
         if args.exp=='JRE':
@@ -57,8 +57,7 @@ def main(args):
 
         # gt_triple_emb_store, gt_relation_emb_store = get_gt_embds(data_dict)
 
-        for model in ["openchat/openchat_3.5", "meta-llama/Meta-Llama-3.1-8B-Instruct", "mistralai/Mistral-Nemo-Instruct-2407",
-                      "google/gemma-2-9b-it", "OpenAI/gpt-4o-mini"]:
+        for model in ["google/gemma-2-9b-it"]:
             files = list(
                 Path(f'{args.base_path}/processed_results/{args.exp}/{data}/{model}'
                      ).rglob('*.jsonl'))
@@ -81,7 +80,7 @@ def main(args):
                             sample = json.loads(line)
                             tmp_dict[sample['id']] = sample
 
-                    ts = get_ts_scores(args.exp, data_dict, tmp_dict, dictionary, lda_model)
+                    # ts = get_ts_scores(args.exp, data_dict, tmp_dict, dictionary, lda_model)
                     if args.exp=='JRE':
                         uq = calculate_uniqueness_score(tmp_dict, ELE_EMB_DICT)
                     # cs = calculate_completeness_score(tmp_dict, gt_triple_emb_store, gt_relation_emb_store, ELE_EMB_DICT)
@@ -90,10 +89,10 @@ def main(args):
                     p, r, f1 = get_traditional_scores(args.exp, res_dict, prompt2rel)
 
                     row = {'exp': args.exp, 'dataset': dataset, 'model': f'{llm_fam}/{llm}', 'demo': demo, 'seed': seed, 'k': k,
-                           'prompt': prompt, 'f1': f1, 'p': p, 'r': r}
+                           'prompt': prompt, 'f1': f1, 'p': p, 'r': r, 'ts': ts}
                     df.loc[len(df)] = row
     os.makedirs(f'{args.base_path}/eval_csvs', exist_ok=True)
-    df.to_csv(f'{args.base_path}/eval_csvs/{args.exp}_traditional.csv', index=False)
+    df.to_csv(f'{args.base_path}/eval_csvs/{args.exp}_v1.csv', index=False)
 
 
 if __name__ == "__main__":
