@@ -114,7 +114,7 @@ def get_traditional_scores(exp, tmp_dict, prompt2rel):
             else:
                 pred_label.append(relation)
             true_label.append(dict_['true_label'])
-        p, r, f = f1_score(pred_label, true_label, na_idx=True)
+        p, r, f = f1_score(pred_label, true_label)
         return p, r, f
 
 
