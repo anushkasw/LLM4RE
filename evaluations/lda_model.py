@@ -3,6 +3,7 @@ from gensim import corpora
 from gensim.models.ldamodel import LdaModel
 from gensim.matutils import kullback_leibler
 import nltk
+import joblib
 import pickle
 import os
 import json
@@ -35,13 +36,13 @@ def main(args):
     corpus = [dictionary.doc2bow(text) for text in processed_texts]
 
     with open(f'{outpath}/dictionary.pkl', 'wb') as f:
-        pickle.dump(dictionary, f)
+        joblib.dump(dictionary, f)
 
     # Train LDA model
     lda = LdaModel(corpus, num_topics=args.topic_nums, id2word=dictionary)
 
     with open(f'{outpath}/lda.pkl', 'wb') as f:
-        pickle.dump(lda, f)
+        joblib.dump(lda, f)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
