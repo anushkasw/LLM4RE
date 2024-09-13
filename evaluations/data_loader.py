@@ -1,8 +1,8 @@
 import json
 
 
-def get_RC_data(data):
-    with open(f'/home/UFAD/aswarup/research/Relation-Extraction/Data/{data}/test.json', "r") as f:
+def get_RC_data(data, path):
+    with open(f'{path}/{data}/test.json', "r") as f:
         test_data = json.load(f)
 
     data_dict = {}
@@ -13,14 +13,14 @@ def get_RC_data(data):
         }
         data_dict[sample['id']] = row
 
-    with open(f'/home/UFAD/aswarup/research/Relation-Extraction/Data/{data}/rel2id.json', "r") as f:
+    with open(f'{path}/{data}/rel2id.json', "r") as f:
         rel2id = json.load(f)
 
     return data_dict, rel2id
 
-def get_JRE_data(data):
+def get_JRE_data(data, path):
     data_dict = {}
-    with open(f'/home/UFAD/aswarup/research/Relation-Extraction/Data_JRE/{data}/test.jsonl', "r") as f:
+    with open(f'{path}/{data}/test.jsonl', "r") as f:
         for line in f.read().splitlines():
             tmp_dict = json.loads(line)
             triples = []
@@ -32,6 +32,6 @@ def get_JRE_data(data):
             }
             data_dict[tmp_dict['sample_id']] = row
 
-    with open(f'/home/UFAD/aswarup/research/Relation-Extraction/Data_JRE/{data}/rel2id.json', "r") as f:
+    with open(f'{path}/{data}/rel2id.json', "r") as f:
         rel2id = json.load(f)
     return data_dict, rel2id
