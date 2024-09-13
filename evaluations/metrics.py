@@ -42,9 +42,9 @@ def main(args):
 
     for data in ['NYT10', 'tacred', 'crossRE', 'FewRel']:
         if args.exp=='jre':
-            data_dict, rel2id = get_JRE_data(data)
+            data_dict, rel2id = get_JRE_data(data, args.data_dir)
         else:
-            data_dict, rel2id = get_RC_data(data)
+            data_dict, rel2id = get_RC_data(data, args.data_dir)
 
 
         rel2prompt = get_rel2prompt(data, rel2id)
@@ -103,8 +103,8 @@ if __name__ == "__main__":
     #
     parser.add_argument('--base_path', '-dir', type=str, required=False,
                         default="/home/UFAD/aswarup/research/Relation-Extraction/LLM4RE/COLING25")
-    # parser.add_argument("--output_dir", default='./output', type=str, required=False,
-    #                     help="The output directory where the lda model")
+    parser.add_argument("--data_dir", default='/home/UFAD/aswarup/research/Relation-Extraction/Data_JRE', type=str, required=False,
+                        help="raw data dir")
 
     args = parser.parse_args()
     main(args)
