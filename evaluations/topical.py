@@ -21,18 +21,15 @@ def get_ts_scores(exp, data_dict, tmp_dict, dictionary, lda_model):
     for idx, dict_ in tmp_dict.items():
         source_text = data_dict[idx]['text']
         triples = dict_['pred_label']
-        if exp == 'JRE':
-            triples_str = ''
+        triples_str = ''
+        if triples and triples != 'Other':
             for triple in triples:
                 if len(triple) == 3:
                     triples_str += f"{triple[0]} {triple[1]} {triple[2]} ."
                 else:
                     continue
         else:
-            if triples and triples != 'Other':
-                triples_str = triples
-            else:
-                continue
+            continue
         processed_source = preprocess(source_text)
         processed_triples = preprocess(triples_str)
         source_corpus = dictionary.doc2bow(processed_source)

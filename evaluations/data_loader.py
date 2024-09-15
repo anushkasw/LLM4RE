@@ -16,6 +16,9 @@ def get_RC_data(data, path):
     with open(f'{path}/{data}/rel2id.json', "r") as f:
         rel2id = json.load(f)
 
+    if data == 'FewRel':
+        rel2id['original_language_of_film_or_tv_show'] = rel2id.pop('original_language_of_film_or_TV_show')
+
     return data_dict, rel2id
 
 def get_JRE_data(data, path):

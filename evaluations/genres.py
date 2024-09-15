@@ -16,9 +16,10 @@ from rel_verbaliser import get_rel2prompt
 from utils import sanity_check
 from data_loader import get_RC_data, get_JRE_data
 
-with open('/blue/woodard/share/Relation-Extraction/LLM_feasibility/Analysis/gre_element_embedding_dict.pkl',
-          'rb') as handle:
-    ELE_EMB_DICT = pickle.load(handle)
+# with open('/blue/woodard/share/Relation-Extraction/LLM_feasibility/Analysis/gre_element_embedding_dict.pkl',
+#           'rb') as handle:
+#     ELE_EMB_DICT = pickle.load(handle)
+ELE_EMB_DICT = None
 
 def main(args):
     if args.exp=='JRE':
@@ -28,6 +29,7 @@ def main(args):
 
 
     rel2prompt = get_rel2prompt(args.data, rel2id)
+
     prompt2rel = {val: key for key, val in rel2prompt.items()}
 
     for idx, sample in data_dict.items():
@@ -61,27 +63,28 @@ def main(args):
         os.makedirs(output_file, exist_ok=True)
 
         check = sanity_check(args.exp, dataset, prompt)
-        if check:
-            tmp_dict = {}
-            with open(file, "r") as f:
-                for line in f.read().splitlines():
-                    sample = json.loads(line)
-                    tmp_dict[sample['id']] = sample
+        if not os.path.exists(f'{output_file}/{file.name}'):
+            if check:
+                tmp_dict = {}
+                with open(file, "r") as f:
+                    for line in f.read().splitlines():
+                        sample = json.loads(line)
+                        tmp_dict[sample['id']] = sample
 
-            ts, tmp_dict = get_ts_scores(args.exp, data_dict, tmp_dict, dictionary, lda_model)
-            us, tmp_dict = calculate_uniqueness_score(tmp_dict, ELE_EMB_DICT)
-            cs, tmp_dict = calculate_completeness_score(tmp_dict, data_dict, rel2prompt, ELE_EMB_DICT)
-            with open(f'{output_file}/{file.name}', 'w') as f:
-                for tmp in tmp_dict.items():
-                    if f.tell() > 0:  # Check if file is not empty
-                        f.write('\n')
-                    json.dump(tmp, f)
-            print(f'File saved in: {output_file}/{file.name}')
+                ts, tmp_dict = get_ts_scores(args.exp, data_dict, tmp_dict, dictionary, lda_model)
+                us, tmp_dict = calculate_uniqueness_score(tmp_dict, ELE_EMB_DICT)
+                cs, tmp_dict = calculate_completeness_score(tmp_dict, data_dict, rel2prompt, ELE_EMB_DICT)
+                with open(f'{output_file}/{file.name}', 'w') as f:
+                    for tmp in tmp_dict.items():
+                        if f.tell() > 0:  # Check if file is not empty
+                            f.write('\n')
+                        json.dump(tmp, f)
+                print(f'File saved in: {output_file}/{file.name}')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--exp', '-e', type=str, required=False, help="Experiment Type", default="JRE")
-    parser.add_argument('--data', '-d', type=str, required=False, help="Dataset Type", default="NYT10")
+    parser.add_argument('--data', '-d', type=str, required=False, help="Dataset Type", default="FewRel")
     parser.add_argument('--model', '-m', type=str, required=False, help="Model Type", default="google/gemma-2-9b-it")
 
     parser.add_argument('--base_path', '-dir', type=str, required=False,
