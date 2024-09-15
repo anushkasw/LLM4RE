@@ -16,10 +16,10 @@ from rel_verbaliser import get_rel2prompt
 from utils import sanity_check
 from data_loader import get_RC_data, get_JRE_data
 
-# with open('/blue/woodard/share/Relation-Extraction/LLM_feasibility/Analysis/gre_element_embedding_dict.pkl',
-#           'rb') as handle:
-#     ELE_EMB_DICT = pickle.load(handle)
-ELE_EMB_DICT = None
+with open('/blue/woodard/share/Relation-Extraction/LLM_feasibility/Analysis/gre_element_embedding_dict.pkl',
+          'rb') as handle:
+    ELE_EMB_DICT = pickle.load(handle)
+# ELE_EMB_DICT = None
 
 def main(args):
     if args.exp=='JRE':
