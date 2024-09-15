@@ -1,11 +1,43 @@
 from collections import defaultdict
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
+from time import sleep
+from openai import OpenAI
+client = OpenAI(api_key="sk-proj-5ysoQyEaYVkjhNgpPU62T3BlbkFJD3nz6JagSAF8sNwUwN8f")
+
+
+def embedding_retriever(term):
+    print('get embds')
+    i = 0
+    while (i < 5):
+        try:
+            # Send the request and retrieve the response
+            response = client.embeddings.create(
+                input=str(term),
+                model="text-embedding-3-large"
+            )
+
+            # Extract the text embeddings from the response JSON
+            embedding = response.data[0].embedding
+
+            return embedding
+
+        except Exception as e:
+            i += 1
+            print(f"Error in gpt_instruct: \"{term}\". Retrying...")
+            sleep(5)
+
+    return np.zeros(3072).tolist()
 
 
 def ele_proxy(element):
     return np.zeros(3072).tolist()
 
+
+def check_triple(ELE_EMB_DICT, element):
+    if element not in ELE_EMB_DICT:
+        ELE_EMB_DICT[element] = embedding_retriever(element)
+    return ELE_EMB_DICT
 
 def get_gt_embds(gt_text_triples, rel2prompt, ELE_EMB_DICT):
     gt_triple_emb_store = {}
@@ -14,18 +46,22 @@ def get_gt_embds(gt_text_triples, rel2prompt, ELE_EMB_DICT):
         gt_triple_list = gt_text_triples[idx]['triples']
         for triple in gt_triple_list:
             triple_str = str(triple)
+            ELE_EMB_DICT = check_triple(ELE_EMB_DICT, triple[0])
+            ELE_EMB_DICT = check_triple(ELE_EMB_DICT, triple[1])
+            ELE_EMB_DICT = check_triple(ELE_EMB_DICT, triple[2])
+
             entity_emb = np.add(ELE_EMB_DICT[triple[0]], ELE_EMB_DICT[triple[2]])
             triple_emb = np.add(np.array(entity_emb), np.array(ELE_EMB_DICT[triple[1]]))
             # emb_ = np.concatenate([ELE_EMB_DICT[triple[0]], ELE_EMB_DICT[triple[1]]])
             # triple_emb = np.concatenate([emb_, ELE_EMB_DICT[triple[2]]])
             gt_triple_emb_store[triple_str] = triple_emb.tolist()
             gt_relation_emb_store[triple_str] = ELE_EMB_DICT[triple[1]]
-    return gt_triple_emb_store, gt_relation_emb_store
+    return gt_triple_emb_store, gt_relation_emb_store, ELE_EMB_DICT
 
 
 def calculate_completeness_score(tmp_dict, data_dict, rel2prompt, ELE_EMB_DICT, model_name=None, threshold=0.95,
                                  output_all_scores=False):
-    gt_triple_emb_store, gt_relation_emb_store = get_gt_embds(data_dict, rel2prompt, ELE_EMB_DICT)
+    gt_triple_emb_store, gt_relation_emb_store, ELE_EMB_DICT = get_gt_embds(data_dict, rel2prompt, ELE_EMB_DICT)
     completeness_scores = []
     scores_details = defaultdict(dict)
     text2cs = {}
