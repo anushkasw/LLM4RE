@@ -15,7 +15,7 @@ from rel_verbaliser import get_rel2prompt
 from utils import sanity_check
 from data_loader import get_RC_data, get_JRE_data
 
-with open('/home/UFAD/aswarup/research/Relation-Extraction/LLM4RE/COLING25/gre_element_embedding_dict_small.pkl',
+with open('/blue/woodard/share/Relation-Extraction/LLM_feasibility/Analysis/gre_element_embedding_dict.pkl',
           'rb') as handle:
     ELE_EMB_DICT = pickle.load(handle)
 
@@ -84,9 +84,6 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--exp', '-e', type=str, required=False, help="Experiment Type", default="JRE")
-    parser.add_argument('--ts', type=bool, default=False)
-    # parser.add_argument('--model_name', '-m', type=str, required=False, help="Model Name.", default="mistral")
-    #
     parser.add_argument('--base_path', '-dir', type=str, required=False,
                         default="/home/UFAD/aswarup/research/Relation-Extraction/LLM4RE/COLING25")
     parser.add_argument("--data_dir", default='/home/UFAD/aswarup/research/Relation-Extraction/Data_JRE', type=str, required=False,
