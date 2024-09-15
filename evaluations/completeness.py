@@ -34,7 +34,7 @@ def calculate_completeness_score(tmp_dict, data_dict, rel2prompt, ELE_EMB_DICT, 
         gt_triples = data_dict[idx]['triples']
         triples = dict_['pred_label']
 
-        if len(triples) == 0:
+        if not triples or len(triples) == 0:
             tmp_dict[idx]['cs'] = 0
             completeness_scores.append(0)
             continue
