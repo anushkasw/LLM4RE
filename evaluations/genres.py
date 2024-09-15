@@ -2,6 +2,7 @@ import argparse
 import os
 import json
 import pickle
+import joblib
 import numpy as np
 import pandas as pd
 from pathlib import Path
@@ -40,10 +41,10 @@ def main(args):
                     triple[1] = rel2prompt[triple[1]]
                 triples[i] = tuple(triple)
 
-        dictionary = pickle.load(
-            open(f'{args.base_path}/topical_models/{data}/dictionary.pkl', 'rb'))
-        lda_model = pickle.load(
-            open(f'{args.base_path}/topical_models/{data}/lda.pkl', 'rb'))
+        dictionary = joblib.load(
+            open(f'{args.base_path}/topical_models/{data}/dictionary.joblib', 'rb'))
+        lda_model = joblib.load(
+            open(f'{args.base_path}/topical_models/{data}/lda.joblib', 'rb'))
 
         for model in ["google/gemma-2-9b-it"]:
             files = list(
