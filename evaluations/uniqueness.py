@@ -46,7 +46,7 @@ def calculate_uniqueness_score(tmp_dict, ELE_EMB_DICT, output_all_scores=False):
     scores = []
     def process_triples(triples):
         # if no triples, return 0
-        if len(triples) == 0:
+        if not triples or len(triples) == 0:
             return 1
         return calculate_uniqueness_for_text(triples, ELE_EMB_DICT)
 
