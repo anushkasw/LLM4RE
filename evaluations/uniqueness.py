@@ -3,6 +3,9 @@ import pickle
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
+def ele_proxy(element):
+    return np.zeros(3072).tolist()
+
 def get_triple_embedding(triple, ELE_EMB_DICT):
     entity_emb = np.add(ELE_EMB_DICT[triple[0]], ELE_EMB_DICT[triple[2]])
     triple_emb = np.add(entity_emb, ELE_EMB_DICT[triple[1]])
@@ -40,7 +43,6 @@ def calculate_uniqueness_for_text(triples, ELE_EMB_DICT):
 
 def calculate_uniqueness_score(tmp_dict, ELE_EMB_DICT, output_all_scores=False):
     """Calculate the Uniqueness Score for a dataset using multi-threading."""
-    # TODO: Add embedding dict
     scores = []
     def process_triples(triples):
         # if no triples, return 0
@@ -50,9 +52,11 @@ def calculate_uniqueness_score(tmp_dict, ELE_EMB_DICT, output_all_scores=False):
 
     for idx, dict_ in tmp_dict.items():
         triples = dict_['pred_label']
-        scores.append(process_triples(triples))
+        us = process_triples(triples)
+        scores.append(us)
+        tmp_dict[idx]['us'] = us
 
     avg_score = np.mean(scores)
     if output_all_scores:
         return avg_score, scores
-    return avg_score
+    return avg_score, tmp_dict

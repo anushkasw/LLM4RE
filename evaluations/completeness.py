@@ -2,27 +2,52 @@ from collections import defaultdict
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
-def calculate_completeness_score(tmp_dict, gt_triple_emb_store, gt_relation_emb_store, ELE_EMB_DICT, model_name=None, threshold=0.95, output_all_scores=False):
+
+def ele_proxy(element):
+    return np.zeros(3072).tolist()
+
+
+def get_gt_embds(gt_text_triples, rel2prompt, ELE_EMB_DICT):
+    gt_triple_emb_store = {}
+    gt_relation_emb_store = {}
+    for idx in gt_text_triples.keys():
+        gt_triple_list = gt_text_triples[idx]['triples']
+        for triple in gt_triple_list:
+            triple_str = str(triple)
+            entity_emb = np.add(ELE_EMB_DICT[triple[0]], ELE_EMB_DICT[triple[2]])
+            triple_emb = np.add(np.array(entity_emb), np.array(ELE_EMB_DICT[triple[1]]))
+            # emb_ = np.concatenate([ELE_EMB_DICT[triple[0]], ELE_EMB_DICT[triple[1]]])
+            # triple_emb = np.concatenate([emb_, ELE_EMB_DICT[triple[2]]])
+            gt_triple_emb_store[triple_str] = triple_emb.tolist()
+            gt_relation_emb_store[triple_str] = ELE_EMB_DICT[triple[1]]
+    return gt_triple_emb_store, gt_relation_emb_store
+
+
+def calculate_completeness_score(tmp_dict, data_dict, rel2prompt, ELE_EMB_DICT, model_name=None, threshold=0.95,
+                                 output_all_scores=False):
+    gt_triple_emb_store, gt_relation_emb_store = get_gt_embds(data_dict, rel2prompt, ELE_EMB_DICT)
     completeness_scores = []
     scores_details = defaultdict(dict)
     text2cs = {}
 
     for idx, dict_ in tmp_dict.items():
-        gt_triples = dict_['true_label']
+        gt_triples = data_dict[idx]['triples']
         triples = dict_['pred_label']
 
         if len(triples) == 0:
+            tmp_dict[idx]['cs'] = 0
             completeness_scores.append(0)
             continue
 
         if len(gt_triples) == 0:
+            tmp_dict[idx]['cs'] = 1
             completeness_scores.append(1)
             continue
 
         # if type(triples[0][0]) == list:
         #     triples = triples[0]
         # else:
-        #     triples = triples
+        #     triples = triple
 
         gt_embeddings = {str(triple): gt_triple_emb_store[str(triple)] for triple in gt_triples}
         # Recall calculation
@@ -62,11 +87,9 @@ def calculate_completeness_score(tmp_dict, gt_triple_emb_store, gt_relation_emb_
         # Compute completeness score for this text
         score = sum(gt_recalls.values()) / len(gt_recalls) if len(gt_recalls) > 0 else 0
         completeness_scores.append(score)
+        tmp_dict[idx]['cs'] = score
         # text2cs[text] = score
 
     avg_completeness_score = np.mean(completeness_scores) if completeness_scores else 0
 
-    if output_all_scores != True:
-        return avg_completeness_score, scores_details
-    else:
-        return avg_completeness_score
+    return avg_completeness_score, tmp_dict

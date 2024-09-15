@@ -43,6 +43,7 @@ def get_ts_scores(exp, data_dict, tmp_dict, dictionary, lda_model):
 
         ts_score = math.exp(-kullback_leibler(source_dist, triples_dist))
         all_ts_scores[source_text] = ts_score
+        tmp_dict[idx]['ts'] = ts_score
 
     average_ts_score = sum(all_ts_scores.values()) / len(all_ts_scores)
-    return average_ts_score
+    return average_ts_score, tmp_dict
