@@ -21,70 +21,69 @@ with open('/blue/woodard/share/Relation-Extraction/LLM_feasibility/Analysis/gre_
     ELE_EMB_DICT = pickle.load(handle)
 
 def main(args):
-    df = pd.DataFrame(columns=['exp', 'dataset', 'model', 'demo', 'seed', 'k', 'prompt', 'ts', 'us', 'cs'])
-
-    for data in ['NYT10', 'tacred', 'crossRE', 'FewRel']:
-        if args.exp=='JRE':
-            data_dict, rel2id = get_JRE_data(data, args.data_dir)
-        else:
-            data_dict, rel2id = get_RC_data(data, args.data_dir)
+    if args.exp=='JRE':
+        data_dict, rel2id = get_JRE_data(args.data, args.data_dir)
+    else:
+        data_dict, rel2id = get_RC_data(args.data, args.data_dir)
 
 
-        rel2prompt = get_rel2prompt(data, rel2id)
-        prompt2rel = {val: key for key, val in rel2prompt.items()}
+    rel2prompt = get_rel2prompt(args.data, rel2id)
+    prompt2rel = {val: key for key, val in rel2prompt.items()}
 
-        for idx, sample in data_dict.items():
-            triples = sample['triples']
-            for i, triple in enumerate(triples):
-                if len(triple) > 1:
-                    triple = list(triple)
-                    triple[1] = rel2prompt[triple[1]]
-                triples[i] = tuple(triple)
+    for idx, sample in data_dict.items():
+        triples = sample['triples']
+        for i, triple in enumerate(triples):
+            if len(triple) > 1:
+                triple = list(triple)
+                triple[1] = rel2prompt[triple[1]]
+            triples[i] = tuple(triple)
 
-        dictionary = joblib.load(
-            open(f'{args.base_path}/topical_models/{data}/dictionary.joblib', 'rb'))
-        lda_model = joblib.load(
-            open(f'{args.base_path}/topical_models/{data}/lda.joblib', 'rb'))
+    dictionary = joblib.load(
+        open(f'{args.base_path}/topical_models/{args.data}/dictionary.joblib', 'rb'))
+    lda_model = joblib.load(
+        open(f'{args.base_path}/topical_models/{args.data}/lda.joblib', 'rb'))
 
-        for model in ["google/gemma-2-9b-it"]:
-            files = list(
-                Path(f'{args.base_path}/processed_results/{args.exp}/{data}/{model}'
-                     ).rglob('*.jsonl'))
+    files = list(
+        Path(f'{args.base_path}/processed_results/{args.exp}/{args.data}/{args.model}'
+             ).rglob('*.jsonl'))
 
-            for file in files:
-                # print(file)
-                prompt = file.parts[-1].split('-')[0]
-                k = file.parts[-1].split('-')[-1].split('.')[0]
-                seed = file.parts[-2].split('-')[-1]
-                demo = file.parts[-3]
-                llm = file.parts[-4]
-                llm_fam = file.parts[-5]
-                dataset = file.parts[-6]
+    for file in files:
+        # print(file)
+        prompt = file.parts[-1].split('-')[0]
+        k = file.parts[-1].split('-')[-1].split('.')[0]
+        seed = file.parts[-2].split('-')[-1]
+        demo = file.parts[-3]
+        llm = file.parts[-4]
+        llm_fam = file.parts[-5]
+        dataset = file.parts[-6]
 
-                output_file = f'{args.base_path}/genres_metrics/JRE/{data}/{model}/{demo}/seed-{seed}'
-                os.makedirs(output_file, exist_ok=True)
+        output_file = f'{args.base_path}/genres_metrics/JRE/{args.data}/{args.model}/{demo}/seed-{seed}'
+        os.makedirs(output_file, exist_ok=True)
 
-                check = sanity_check(args.exp, dataset, prompt)
-                if check:
-                    tmp_dict = {}
-                    with open(file, "r") as f:
-                        for line in f.read().splitlines():
-                            sample = json.loads(line)
-                            tmp_dict[sample['id']] = sample
+        check = sanity_check(args.exp, dataset, prompt)
+        if check:
+            tmp_dict = {}
+            with open(file, "r") as f:
+                for line in f.read().splitlines():
+                    sample = json.loads(line)
+                    tmp_dict[sample['id']] = sample
 
-                    ts, tmp_dict = get_ts_scores(args.exp, data_dict, tmp_dict, dictionary, lda_model)
-                    us, tmp_dict = calculate_uniqueness_score(tmp_dict, ELE_EMB_DICT)
-                    cs, tmp_dict = calculate_completeness_score(tmp_dict, data_dict, rel2prompt, ELE_EMB_DICT)
-                    with open(f'{output_file}/{file.name}', 'w') as f:
-                        for tmp in tmp_dict.items():
-                            if f.tell() > 0:  # Check if file is not empty
-                                f.write('\n')
-                            json.dump(tmp, f)
-                    print(f'File saved in: {output_file}/{file.name}')
+            ts, tmp_dict = get_ts_scores(args.exp, data_dict, tmp_dict, dictionary, lda_model)
+            us, tmp_dict = calculate_uniqueness_score(tmp_dict, ELE_EMB_DICT)
+            cs, tmp_dict = calculate_completeness_score(tmp_dict, data_dict, rel2prompt, ELE_EMB_DICT)
+            with open(f'{output_file}/{file.name}', 'w') as f:
+                for tmp in tmp_dict.items():
+                    if f.tell() > 0:  # Check if file is not empty
+                        f.write('\n')
+                    json.dump(tmp, f)
+            print(f'File saved in: {output_file}/{file.name}')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--exp', '-e', type=str, required=False, help="Experiment Type", default="JRE")
+    parser.add_argument('--data', '-d', type=str, required=False, help="Dataset Type", default="NYT10")
+    parser.add_argument('--model', '-m', type=str, required=False, help="Model Type", default="google/gemma-2-9b-it")
+
     parser.add_argument('--base_path', '-dir', type=str, required=False,
                         default="/home/UFAD/aswarup/research/Relation-Extraction/LLM4RE/COLING25")
     parser.add_argument("--data_dir", default='/home/UFAD/aswarup/research/Relation-Extraction/Data_JRE', type=str, required=False,
