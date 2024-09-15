@@ -15,30 +15,12 @@ from rel_verbaliser import get_rel2prompt
 from utils import sanity_check
 from data_loader import get_RC_data, get_JRE_data
 
-with open('/home/UFAD/aswarup/research/Relation-Extraction/LLM4RE/COLING25/gre_element_embedding_dict.pkl',
+with open('/home/UFAD/aswarup/research/Relation-Extraction/LLM4RE/COLING25/gre_element_embedding_dict_small.pkl',
           'rb') as handle:
     ELE_EMB_DICT = pickle.load(handle)
 
-# with open('/home/UFAD/aswarup/research/Relation-Extraction/LLM4RE/COLING25/gre_element_embedding_dict.json', 'r') as f:
-#     ELE_EMB_DICT = json.load(f)
-ELE_EMB_DICT = None
-# def get_gt_embds(data_dict):
-#     gt_triple_emb_store = {}
-#     gt_relation_emb_store = {}
-#     for key, value in data_dict.items():
-#         gt_triple_list = value['triples']
-#         for triple in gt_triple_list:
-#             triple_str = str(triple)
-#             entity_emb = np.add(ELE_EMB_DICT[triple[0]], ELE_EMB_DICT[triple[2]])
-#             triple_emb = np.add(np.array(entity_emb), np.array(ELE_EMB_DICT[triple[1]]))
-#             # emb_ = np.concatenate([ELE_EMB_DICT[triple[0]], ELE_EMB_DICT[triple[1]]])
-#             # triple_emb = np.concatenate([emb_, ELE_EMB_DICT[triple[2]]])
-#             gt_triple_emb_store[triple_str] = triple_emb.tolist()
-#             gt_relation_emb_store[triple_str] = ELE_EMB_DICT[triple[1]]
-#     return gt_triple_emb_store, gt_relation_emb_store
-
 def main(args):
-    df = pd.DataFrame(columns=['exp', 'dataset', 'model', 'demo', 'seed', 'k', 'prompt', 'f1', 'p', 'r', 'ts'])
+    df = pd.DataFrame(columns=['exp', 'dataset', 'model', 'demo', 'seed', 'k', 'prompt', 'ts', 'us', 'cs'])
 
     for data in ['NYT10', 'tacred', 'crossRE', 'FewRel']:
         if args.exp=='JRE':
@@ -50,12 +32,18 @@ def main(args):
         rel2prompt = get_rel2prompt(data, rel2id)
         prompt2rel = {val: key for key, val in rel2prompt.items()}
 
+        for idx, sample in data_dict.items():
+            triples = sample['triples']
+            for i, triple in enumerate(triples):
+                if len(triple) > 1:
+                    triple = list(triple)
+                    triple[1] = rel2prompt[triple[1]]
+                triples[i] = tuple(triple)
+
         dictionary = pickle.load(
             open(f'{args.base_path}/topical_models/{data}/dictionary.pkl', 'rb'))
         lda_model = pickle.load(
             open(f'{args.base_path}/topical_models/{data}/lda.pkl', 'rb'))
-
-        # gt_triple_emb_store, gt_relation_emb_store = get_gt_embds(data_dict)
 
         for model in ["google/gemma-2-9b-it"]:
             files = list(
@@ -72,6 +60,9 @@ def main(args):
                 llm_fam = file.parts[-5]
                 dataset = file.parts[-6]
 
+                output_file = f'{args.base_path}/genres_metrics/JRE/{data}/{model}/{demo}/seed-{seed}'
+                os.makedirs(output_file, exist_ok=True)
+
                 check = sanity_check(args.exp, dataset, prompt)
                 if check:
                     tmp_dict = {}
@@ -80,30 +71,25 @@ def main(args):
                             sample = json.loads(line)
                             tmp_dict[sample['id']] = sample
 
-                    ts = get_ts_scores(args.exp, data_dict, tmp_dict, dictionary, lda_model)
-                    if args.exp=='JRE':
-                        uq = calculate_uniqueness_score(tmp_dict, ELE_EMB_DICT)
-                    cs = calculate_completeness_score(tmp_dict, gt_triple_emb_store, gt_relation_emb_store, ELE_EMB_DICT)
-
-                    res_dict = tmp_dict.copy()
-                    p, r, f1 = get_traditional_scores(args.exp, res_dict, prompt2rel)
-
-                    row = {'exp': args.exp, 'dataset': dataset, 'model': f'{llm_fam}/{llm}', 'demo': demo, 'seed': seed, 'k': k,
-                           'prompt': prompt, 'f1': f1, 'p': p, 'r': r, 'ts': ts}
-                    df.loc[len(df)] = row
-    os.makedirs(f'{args.base_path}/eval_csvs', exist_ok=True)
-    df.to_csv(f'{args.base_path}/eval_csvs/{args.exp}_v1.csv', index=False)
-
+                    ts, tmp_dict = get_ts_scores(args.exp, data_dict, tmp_dict, dictionary, lda_model)
+                    us, tmp_dict = calculate_uniqueness_score(tmp_dict, ELE_EMB_DICT)
+                    cs, tmp_dict = calculate_completeness_score(tmp_dict, data_dict, rel2prompt, ELE_EMB_DICT)
+                    with open(f'{output_file}/{file.name}', 'w') as f:
+                        for tmp in tmp_dict.items():
+                            if f.tell() > 0:  # Check if file is not empty
+                                f.write('\n')
+                            json.dump(tmp, f)
+                    print(f'File saved in: {output_file}/{file.name}')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--exp', '-e', type=str, required=False, help="Experiment Type", default="RC")
+    parser.add_argument('--exp', '-e', type=str, required=False, help="Experiment Type", default="JRE")
     parser.add_argument('--ts', type=bool, default=False)
     # parser.add_argument('--model_name', '-m', type=str, required=False, help="Model Name.", default="mistral")
     #
     parser.add_argument('--base_path', '-dir', type=str, required=False,
                         default="/home/UFAD/aswarup/research/Relation-Extraction/LLM4RE/COLING25")
-    parser.add_argument("--data_dir", default='/home/UFAD/aswarup/research/Relation-Extraction/Data', type=str, required=False,
+    parser.add_argument("--data_dir", default='/home/UFAD/aswarup/research/Relation-Extraction/Data_JRE', type=str, required=False,
                         help="raw data dir")
 
     args = parser.parse_args()
