@@ -67,6 +67,7 @@ def get_rel2prompt(task, rel2id):
                 labels = name.split('-')
 
         elif task in ['tacred', 'tacrev', 'retacred', 'dummy_tacred', 'kbp37']:
+
             labels = [name.lower().replace("_", " ").replace("-", " ").replace("per", "person").replace("org",
                                                                                                         "organization").replace(
                 "stateor", "state or ")]

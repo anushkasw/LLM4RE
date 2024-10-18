@@ -38,7 +38,7 @@ class instance:
             else: tailtype = mentions['em2Type']
 
             self.triples.append({
-                'id': mentions['sent_id'],
+                'id': mentions['sent_id'] if 'sent_id' in mentions else None,
                 'head': mentions['em1Text'],
                 'tail': mentions['em2Text'],
                 'head_type': headtype,
@@ -50,7 +50,7 @@ class instance:
 
 
 class DataProcessor:
-    def __init__(self, args, data_seed):
+    def __init__(self, args, data_seed=None):
         with open(f'{args.data_dir}/{args.task}/rel2id.json', "r") as f:
             self.rel2id = json.loads(f.read())
 
@@ -79,7 +79,11 @@ class DataProcessor:
             self.reasons = None
 
         self.train_path = f'{args.data_dir}/{args.task}/train.jsonl'
-        self.test_path = f'{args.data_dir}/{args.task}/test-{data_seed}.jsonl'
+
+        if data_seed:
+            self.test_path = f'{args.data_dir}/{args.task}/test-{data_seed}.jsonl'
+        else:
+            self.test_path = f'{args.data_dir}/{args.task}/test.jsonl'
 
     def get_train_examples(self):
         return self.get_examples(self.train_path)
@@ -122,6 +126,15 @@ class DataProcessor:
                         if "_" in lab:
                             labels[idx] = lab.split("_")
                     labels = flatten_list(labels)
+
+            elif args.task == 'FinRED':
+                if name == "director_/_manager":
+                    labels = ['director', 'manager']
+                else:
+                    labels = name.split('_')
+
+            elif args.task == 'FIRE':
+                labels = re.findall('[A-Z][^A-Z]*', name)
 
             elif args.task == 'WebNLG':
                 name_mod = re.sub(r"['()]", '', name)

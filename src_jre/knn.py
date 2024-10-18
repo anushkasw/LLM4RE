@@ -77,13 +77,14 @@ def get_demonstration_mappings(args):
         del test_dict, knn_model, train_dict
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='MentalLlama')
+    parser = argparse.ArgumentParser(description='KNN Demo')
     parser.add_argument("--use_cuda", action='store_true',
                         help="if GPUs available")
     # Required
     parser.add_argument('--task', type=str, required=True)
     parser.add_argument('--data_dir', type=str, required=True)
     parser.add_argument('--seed', type=int, default=42)
+    parser.add_argument("--reason", action='store_true', help="Add reasoning to examples")
 
     # Training Parameters
     parser.add_argument('--na_idx', type=int, default=None)
