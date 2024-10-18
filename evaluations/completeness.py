@@ -2,6 +2,8 @@ from collections import defaultdict
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from time import sleep
+
+import genres
 from openai import OpenAI
 client = OpenAI(api_key="sk-proj-5ysoQyEaYVkjhNgpPU62T3BlbkFJD3nz6JagSAF8sNwUwN8f")
 
@@ -39,29 +41,29 @@ def check_triple(ELE_EMB_DICT, element):
         ELE_EMB_DICT[element] = embedding_retriever(element)
     return ELE_EMB_DICT
 
-def get_gt_embds(gt_text_triples, rel2prompt, ELE_EMB_DICT):
+def get_gt_embds(gt_text_triples):
     gt_triple_emb_store = {}
     gt_relation_emb_store = {}
     for idx in gt_text_triples.keys():
         gt_triple_list = gt_text_triples[idx]['triples']
         for triple in gt_triple_list:
             triple_str = str(triple)
-            ELE_EMB_DICT = check_triple(ELE_EMB_DICT, triple[0])
-            ELE_EMB_DICT = check_triple(ELE_EMB_DICT, triple[1])
-            ELE_EMB_DICT = check_triple(ELE_EMB_DICT, triple[2])
+            check_triple(genres.ele_emb_dict, triple[0])
+            check_triple(genres.ele_emb_dict, triple[1])
+            check_triple(genres.ele_emb_dict, triple[2])
 
-            entity_emb = np.add(ELE_EMB_DICT[triple[0]], ELE_EMB_DICT[triple[2]])
-            triple_emb = np.add(np.array(entity_emb), np.array(ELE_EMB_DICT[triple[1]]))
-            # emb_ = np.concatenate([ELE_EMB_DICT[triple[0]], ELE_EMB_DICT[triple[1]]])
-            # triple_emb = np.concatenate([emb_, ELE_EMB_DICT[triple[2]]])
+            entity_emb = np.add(genres.ele_emb_dict[triple[0]], genres.ele_emb_dict[triple[2]])
+            triple_emb = np.add(np.array(entity_emb), np.array(genres.ele_emb_dict[triple[1]]))
+            # emb_ = np.concatenate([genres.ele_emb_dict[triple[0]], genres.ele_emb_dict[triple[1]]])
+            # triple_emb = np.concatenate([emb_, genres.ele_emb_dict[triple[2]]])
             gt_triple_emb_store[triple_str] = triple_emb.tolist()
-            gt_relation_emb_store[triple_str] = ELE_EMB_DICT[triple[1]]
-    return gt_triple_emb_store, gt_relation_emb_store, ELE_EMB_DICT
+            gt_relation_emb_store[triple_str] = genres.ele_emb_dict[triple[1]]
+    return gt_triple_emb_store, gt_relation_emb_store
 
 
-def calculate_completeness_score(tmp_dict, data_dict, rel2prompt, ELE_EMB_DICT, model_name=None, threshold=0.95,
+def calculate_completeness_score(tmp_dict, data_dict, model_name=None, threshold=0.95,
                                  output_all_scores=False):
-    gt_triple_emb_store, gt_relation_emb_store, ELE_EMB_DICT = get_gt_embds(data_dict, rel2prompt, ELE_EMB_DICT)
+    gt_triple_emb_store, gt_relation_emb_store = get_gt_embds(data_dict)
     completeness_scores = []
     scores_details = defaultdict(dict)
     text2cs = {}
@@ -93,12 +95,12 @@ def calculate_completeness_score(tmp_dict, data_dict, rel2prompt, ELE_EMB_DICT, 
         extracted_relation_embeddings = []
         for triple in triples:
             try:
-                entity_emb = np.add(ELE_EMB_DICT[triple[0]], ELE_EMB_DICT[triple[2]])
-                triple_emb = np.add(entity_emb, ELE_EMB_DICT[triple[1]])
+                entity_emb = np.add(genres.ele_emb_dict[triple[0]], genres.ele_emb_dict[triple[2]])
+                triple_emb = np.add(entity_emb, genres.ele_emb_dict[triple[1]])
                 # emb_ = np.concatenate([ELE_EMB_DICT[triple[0]], ELE_EMB_DICT[triple[1]]])
                 # triple_emb = np.concatenate([emb_, ELE_EMB_DICT[triple[2]]])
                 extracted_triple_embeddings.append(triple_emb.tolist())
-                extracted_relation_embeddings.append(ELE_EMB_DICT[triple[1]])
+                extracted_relation_embeddings.append(genres.ele_emb_dict[triple[1]])
             except:
                 continue
         if len(extracted_triple_embeddings) == 0:

@@ -32,7 +32,7 @@ def get_demonstration_mappings(args):
     outpath = f'{args.data_dir}/{args.task}/randomDemo'
     os.makedirs(outpath, exist_ok=True)
 
-    data_processor = DataProcessor(args) #TODO: Don't use this dataloader; test file set to subsets
+    data_processor = DataProcessor(args)
     # for seed in [13, 42, 100]:
     for k in [1, 5, 10, 20, 30]:
         train_dict = data_processor.get_train_examples()  # train data
@@ -54,7 +54,7 @@ def get_demonstration_mappings(args):
         del test_dict, train_dict
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='MentalLlama')
+    parser = argparse.ArgumentParser(description='Random Demo Retreiver')
     parser.add_argument("--use_cuda", action='store_true',
                         help="if GPUs available")
     # Required
