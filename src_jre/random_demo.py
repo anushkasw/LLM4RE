@@ -61,6 +61,7 @@ if __name__ == "__main__":
     parser.add_argument('--task', type=str, required=True)
     parser.add_argument('--data_dir', type=str, required=True)
     parser.add_argument('--seed', type=int, default=42)
+    parser.add_argument("--reason", action='store_true', help="Add reasoning to examples")
 
     # Training Parameters
     parser.add_argument('--na_idx', type=int, default=None)

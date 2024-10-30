@@ -5,7 +5,7 @@ from time import sleep
 
 import genres
 from openai import OpenAI
-client = OpenAI(api_key="sk-proj-5ysoQyEaYVkjhNgpPU62T3BlbkFJD3nz6JagSAF8sNwUwN8f")
+client = OpenAI(api_key=KEY)
 
 
 def embedding_retriever(term):
