@@ -42,6 +42,10 @@ def create_prompt(args, input, demo_list, data_processor):
         prompt = prompt.replace("$RELATION_SET$", '[' + ', '.join(str(x) for x in relations) + ']')
         prompt = prompt.replace("$ENTITY_SET$", '[' + ', '.join(str(x) for x in entities) + ']')
 
+    if args.prompt == 'rel':
+        relations = list(data_processor.rel2prompt.values())
+        prompt = prompt.replace("$RELATION_SET$", '[' + ', '.join(str(x) for x in relations) + ']')
+
     if not args.demo == 'zero':
         examples = get_demo(demo_list, data_processor.reasons)
         prompt = prompt.replace("$EXAMPLES$", examples)
