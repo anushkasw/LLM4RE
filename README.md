@@ -7,8 +7,8 @@ This repository contains code associated with the paper ["LLM4RE: A Data-centric
 LLM4RE/
 ├── evaluations/         # Traditional and GenRES evaluation metric calculation
 ├── prompts/             # Prompts used for the pipeline
-├── src_jre/             # Source code for evaluation joint relation extractors
-├── src_re/              # Source code for evaluation joint relation classifiers
+├── src_jre/             # Source code for joint relation extraction
+├── src_re/              # Source code for joint relation classification
 └── requirements.txt     # Python dependencies
 ```
 
