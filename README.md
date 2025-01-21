@@ -8,7 +8,7 @@ LLM4RE/
 ├── evaluations/         # Traditional and GenRES evaluation metric calculation
 ├── prompts/             # Prompts used for the pipeline
 ├── src_jre/             # Source code for joint relation extraction
-├── src_re/              # Source code for joint relation classification
+├── src_re/              # Source code for relation classification
 └── requirements.txt     # Python dependencies
 ```
 
