@@ -22,8 +22,7 @@ pip install -r requirements.txt
 ```
 
 ## Getting Started
-### Data Preparation: Place your datasets in the data/ folder. Follow the format guidelines in docs/data_format.md.
-### Model Inference: Use the main.py file in the src_jre and src_re folders to make inference for joint relation extraction and relation classification.
+- Model Inference: Use the main.py file in the src_jre and src_re folders to make inference for joint relation extraction and relation classification.
 ```bash
 python ./src_re/main.py \
 --task "NYT10" \
@@ -36,7 +35,7 @@ python ./src_re/main.py \
 --prompt_dir ./prompts
 
 ```
-### Evaluation: This folder contains code to extract traditional and GenRES metrics. The CS, US, and TS metric calculation code has been derived from the [GenRES](https://github.com/pat-jj/GenRES) repository which is based this [paper](https://aclanthology.org/2024.naacl-long.155/)
+- Evaluation: This folder contains code to extract traditional and GenRES metrics. The CS, US, and TS metric calculation code has been derived from the [GenRES](https://github.com/pat-jj/GenRES) repository which is based this [paper](https://aclanthology.org/2024.naacl-long.155/)
 
 ### Cite
 If you plan on using the code please cite the paper:
