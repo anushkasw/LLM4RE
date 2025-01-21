@@ -5,9 +5,9 @@ This repository contains code associated with the paper ["LLM4RE: A Data-centric
 ## Repository Structure
 ```bash
 LLM4RE/
-├── evaluations/             # Traditional and GenRES evaluation metric calculation
-├── prompts/                # Prompts used for the pipeline
-├── src_jre/                # Source code for evaluation joint relation extractors
+├── evaluations/         # Traditional and GenRES evaluation metric calculation
+├── prompts/             # Prompts used for the pipeline
+├── src_jre/             # Source code for evaluation joint relation extractors
 ├── src_re/              # Source code for evaluation joint relation classifiers
 └── requirements.txt     # Python dependencies
 ```
