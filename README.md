@@ -1,6 +1,6 @@
 # LLM4RE: A Data-centric Feasibility Study for Relation Extraction
 
-This repository contains code associated with the paper ["LLM4RE: A Data-centric Feasibility Study for Relation Extraction"]([https://ieeexplore.ieee.org/document/10747504](https://aclanthology.org/2025.coling-main.447/)).
+This repository contains code associated with the paper ["LLM4RE: A Data-centric Feasibility Study for Relation Extraction"]([https://ieeexplore.ieee.org/document/10747504](https://aclanthology.org/2025.coling-main.447/)) published in the Proceedings of the 31st International Conference on Computational Linguistics.
 
 
 
