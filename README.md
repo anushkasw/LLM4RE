@@ -5,14 +5,10 @@ This repository contains code associated with the paper ["LLM4RE: A Data-centric
 ## Repository Structure
 ```bash
 LLM4RE/
-├── configs/             # Configuration files for experiments
-├── data/                # Datasets and preprocessing scripts
-├── docs/                # Documentation and usage guides
-├── models/              # Model definitions and utilities
-├── scripts/             # Training and evaluation scripts
-├── visualization/       # Tools for visualizing knowledge graphs
-├── tests/               # Unit tests for the codebase
-├── checkpoints/         # Trained model weights
+├── evaluations/             # Traditional and GenRES evaluation metric calculation
+├── prompts/                # Prompts used for the pipeline
+├── src_jre/                # Source code for evaluation joint relation extractors
+├── src_re/              # Source code for evaluation joint relation classifiers
 └── requirements.txt     # Python dependencies
 ```
 
