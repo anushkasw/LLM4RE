@@ -2,11 +2,47 @@
 
 This repository contains code associated with the paper ["LLM4RE: A Data-centric Feasibility Study for Relation Extraction"]([https://ieeexplore.ieee.org/document/10747504](https://aclanthology.org/2025.coling-main.447/)) published in the Proceedings of the 31st International Conference on Computational Linguistics.
 
+## Repository Structure
+```bash
+LLM4RE/
+├── configs/             # Configuration files for experiments
+├── data/                # Datasets and preprocessing scripts
+├── docs/                # Documentation and usage guides
+├── models/              # Model definitions and utilities
+├── scripts/             # Training and evaluation scripts
+├── visualization/       # Tools for visualizing knowledge graphs
+├── tests/               # Unit tests for the codebase
+├── checkpoints/         # Trained model weights
+└── requirements.txt     # Python dependencies
+```
 
+## Installation
+To clone this repository and set up the environment:
 
+```bash
+git clone https://github.com/anushkasw/LLM4RE.git
+cd LLM4RE
+pip install -r requirements.txt
+```
+Ensure you have Python 3.8+ and a CUDA-compatible GPU for best performance.
+
+## Getting Started
+### Data Preparation: Place your datasets in the data/ folder. Follow the format guidelines in docs/data_format.md.
+Model Training: Run scripts/train_model.py to train the relation extraction model:
+```bash
+python scripts/train_model.py --config configs/default.yaml
+```
+### Evaluation: Use scripts/evaluate.py to test the model on benchmark datasets:
+```bash
+python scripts/evaluate.py --model checkpoints/best_model.pth
+```
+### Visualization: Generate knowledge graphs using the visualization/ scripts:
+```bash
+python visualization/graph_builder.py --input data/sample_relations.csv
+```
 
 ### Cite
-If you plan on using any of our resources please cite the paper:
+If you plan on using the code please cite the paper:
 
 ```
 @inproceedings{swarup-etal-2025-llm4re,
